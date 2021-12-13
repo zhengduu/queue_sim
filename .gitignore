@@ -2,4 +2,5 @@
 /Plots/
 /Output/
 /__pycache__/
+/queue_sim/__pycache__/
 queue_plots.py
