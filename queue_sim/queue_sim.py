@@ -436,7 +436,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     
     # Folder with packet traces 
     # file_folder = r"C:\Zheng Data\TU Delft\Thesis\Thesis Work\GitHub\SXRSIMv3\PCAP\Trace"
-    file_folder = os.getcwd() + '\\queue_sim'
+    file_folder = os.getcwd() # + '\\queue_sim'
     file_to_simulate = file_folder + '\\VR_traces\\' + vr_file_name    
     
     # Create output save folder
