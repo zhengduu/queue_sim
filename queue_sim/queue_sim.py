@@ -773,8 +773,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
 
 if __name__ == "__main__":
     
-    input_args = 0
-    
+    input_args = 0    
     input_file = "trace_0.csv"    
     sim_par = Sim_Par(use_pcap = True, fps = 30, GoP = 6, bitrate = 10000000, 
                       IP_ratio = 0.2, packet_size = 1500)  
@@ -782,10 +781,8 @@ if __name__ == "__main__":
     main(input_args, serving_bitrate=1e9, sim_par=sim_par, debug=[False, 5, False])
 
     # main(input_file, serving_bitrate=1e9, n_queues=5, sys_load=0.02, 
-    #      sim_time=0.9999, sim_par=sim_par, debug=[False, 5, False]) 
-    
+    #      sim_time=0.9999, sim_par=sim_par, debug=[False, 5, False])     
     # Debugging mode - #Packets - Print statements
-    # exp_time=1e-3, #0.005
 
 
 
