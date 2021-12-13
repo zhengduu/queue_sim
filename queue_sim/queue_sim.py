@@ -116,8 +116,8 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
     all_bg_sizes = []
     
     # Trimodal packet size distribution
-    packet_sizes = np.array([40, 500, 1500]) # In Byte
-    packet_prob = np.array([0.40, 0.25, 0.35]) 
+    packet_sizes = np.array([44, 576, 1500]) # In Byte
+    packet_prob = np.array([0.44, 0.19, 0.37]) 
         
     # Calculate exponential inter-packet arrival time through packet 
     # distribution and desired system load 
