@@ -440,9 +440,9 @@ def main(input_args, serving_bitrate, sim_par, debug):
     file_to_simulate = file_folder + '\\VR_traces\\' + vr_file_name    
     
     # Create output save folder
-    save_folder_name = f'{n_queues}Q - {round(sim_time, 1)}s - ' + \
+    save_folder_name = f'{n_queues}Q - {sys_load*100}% Load - ' + \
                        f'{int(serving_bitrate/(1e9))}Gbps - ' + \
-                       f'{sys_load*100}% Load'
+                       f'{round(sim_time, 1)}s'
     output_save_path = file_folder + "\\Output\\" + save_folder_name    
     os.makedirs(output_save_path, exist_ok=True)
     
