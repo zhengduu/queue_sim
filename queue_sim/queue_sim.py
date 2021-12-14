@@ -447,7 +447,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     os.makedirs(output_save_path, exist_ok=True)
     
     # Txt file with print logs
-    log_name = save_folder_name + " - log.txt" 
+    log_name = save_folder_name + f' - {vr_file_name} - log.txt' 
     txt_log_file = output_save_path + "\\" + log_name
     
     # Use real video data   
