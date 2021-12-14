@@ -1,0 +1,27 @@
+
+Simulation Parameters: 
+ Simulation duration: 3.999 s
+ Number of queues: 5
+ Serving Bitrate: 1000.0Mbps
+ System Load: 90.0%
+Initializing Event Calendar: 100.1576 seconds
+Total start events: 3291323
+
+Simulation Duration: 0.04688 s
+Iterations: 0 - Time: 0.0
+Event Calendar: 3291322 Entries left
+Event Handling Duration: 0.04397 s
+
+Simulation Duration: 5933.75844 s
+Iterations: 100000 - Time: 0.06
+Event Calendar: 3241458 Entries left
+Event Handling Duration: 0.03301 s
+
+Simulation Duration: 11262.87485 s
+Iterations: 200000 - Time: 0.121
+Event Calendar: 3191542 Entries left
+Event Handling Duration: 0.03237 s
+
+Simulation Duration: 16553.97058 s
+Iterations: 300000 - Time: 0.182
+Event Calendar: 3141614 Entries left
