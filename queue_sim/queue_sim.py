@@ -458,14 +458,13 @@ def main(input_args, serving_bitrate, sim_par, debug):
                         
         # Adjust timestamps to avoid sorting problems!  
         # Packet timestamp count starts at zero 
-        sim_data['time'] = sim_data['time'].apply(lambda x: x - sim_data['time'][0])
-        
-        # Cut dataframe until total simulation time
-        sim_data = sim_data[(sim_data['time'] <= sim_time)]  
+        # sim_data['time'] = sim_data['time'].apply(lambda x: x - sim_data['time'][0])
         
         # Set all packets belonging to same frame to frame generation time 
-        fps = int(np.ceil(sim_data["frame"].iloc[-1] / sim_data["time"].iloc[-1]))
-        frame_time = 1 / 30 # fps
+        fps = 30 # int(np.ceil(sim_data["frame"].iloc[-1] / sim_data["time"].iloc[-1]))
+        frame_time = 1 / fps
+        # Cut dataframe until total simulation time by frame number
+        sim_data = sim_data[((sim_data['frame']/fps) <= sim_time)]          
         
         sim_data['time'] = sim_data['frame'] * frame_time 
         
