@@ -40,3 +40,8 @@ Event Handling Duration: 0.01653 s
 Simulation Duration: 18958.39946 s
 Iterations: 600000 - Time: 0.326
 Event Calendar: 1529637 Entries left
+Event Handling Duration: 0.01588 s
+
+Simulation Duration: 21851.83144 s
+Iterations: 700000 - Time: 0.38
+Event Calendar: 1480001 Entries left
