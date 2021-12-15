@@ -1,10 +1,11 @@
 /Other(ignore)/
 /Plots/
-/Output/
 /Output/old/
+<<<<<<< HEAD
 /Output/test/
 /Output/new/
+=======
+>>>>>>> parent of cf53998 (Merge branch 'main' of https://github.com/zhengduu/queue_sim into main)
 /__pycache__/
 /queue_sim/__pycache__/
 queue_plots.py
-queue_sim_utils.py
