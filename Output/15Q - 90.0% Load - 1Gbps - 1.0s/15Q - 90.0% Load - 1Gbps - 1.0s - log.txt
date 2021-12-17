@@ -135,3 +135,150 @@ Event Handling Duration: 0.01780 s
 Simulation Duration: 69972.92432 s
 Iterations: 2500000 - Time: 0.493
 Event Calendar: 1252357 Entries left
+Event Handling Duration: 0.01687 s
+
+Simulation Duration: 71845.46962 s
+Iterations: 2600000 - Time: 0.512
+Event Calendar: 1203786 Entries left
+Event Handling Duration: 0.00906 s
+
+Simulation Duration: 73704.72743 s
+Iterations: 2700000 - Time: 0.532
+Event Calendar: 1155113 Entries left
+Event Handling Duration: 0.01682 s
+
+Simulation Duration: 75277.34117 s
+Iterations: 2800000 - Time: 0.551
+Event Calendar: 1106508 Entries left
+Event Handling Duration: 0.01743 s
+
+Simulation Duration: 76832.98731 s
+Iterations: 2900000 - Time: 0.571
+Event Calendar: 1058074 Entries left
+Event Handling Duration: 0.00951 s
+
+Simulation Duration: 78401.53618 s
+Iterations: 3000000 - Time: 0.591
+Event Calendar: 1009474 Entries left
+Event Handling Duration: 0.01291 s
+
+Simulation Duration: 79748.69463 s
+Iterations: 3100000 - Time: 0.61
+Event Calendar: 960918 Entries left
+Event Handling Duration: 0.01590 s
+
+Simulation Duration: 81032.19494 s
+Iterations: 3200000 - Time: 0.63
+Event Calendar: 912123 Entries left
+Event Handling Duration: 0.00644 s
+
+Simulation Duration: 82251.44637 s
+Iterations: 3300000 - Time: 0.65
+Event Calendar: 863598 Entries left
+Event Handling Duration: 0.00569 s
+
+Simulation Duration: 83522.27137 s
+Iterations: 3400000 - Time: 0.669
+Event Calendar: 815301 Entries left
+Event Handling Duration: 0.01026 s
+
+Simulation Duration: 84573.77229 s
+Iterations: 3500000 - Time: 0.689
+Event Calendar: 766980 Entries left
+Event Handling Duration: 0.00524 s
+
+Simulation Duration: 85652.06018 s
+Iterations: 3600000 - Time: 0.708
+Event Calendar: 718601 Entries left
+Event Handling Duration: 0.00491 s
+
+Simulation Duration: 86827.64258 s
+Iterations: 3700000 - Time: 0.728
+Event Calendar: 670165 Entries left
+Event Handling Duration: 0.00791 s
+
+Simulation Duration: 88088.76161 s
+Iterations: 3800000 - Time: 0.748
+Event Calendar: 621855 Entries left
+Event Handling Duration: 0.01110 s
+
+Simulation Duration: 89131.86703 s
+Iterations: 3900000 - Time: 0.767
+Event Calendar: 573529 Entries left
+Event Handling Duration: 0.01012 s
+
+Simulation Duration: 90171.39707 s
+Iterations: 4000000 - Time: 0.787
+Event Calendar: 524867 Entries left
+Event Handling Duration: 0.00434 s
+
+Simulation Duration: 91235.43334 s
+Iterations: 4100000 - Time: 0.807
+Event Calendar: 476178 Entries left
+Event Handling Duration: 0.00606 s
+
+Simulation Duration: 92228.29634 s
+Iterations: 4200000 - Time: 0.826
+Event Calendar: 427293 Entries left
+Event Handling Duration: 0.01107 s
+
+Simulation Duration: 93241.80139 s
+Iterations: 4300000 - Time: 0.846
+Event Calendar: 378629 Entries left
+Event Handling Duration: 0.01036 s
+
+Simulation Duration: 94269.74947 s
+Iterations: 4400000 - Time: 0.866
+Event Calendar: 329850 Entries left
+Event Handling Duration: 0.00478 s
+
+Simulation Duration: 95264.91604 s
+Iterations: 4500000 - Time: 0.886
+Event Calendar: 281100 Entries left
+Event Handling Duration: 0.00720 s
+
+Simulation Duration: 96210.30723 s
+Iterations: 4600000 - Time: 0.905
+Event Calendar: 232501 Entries left
+Event Handling Duration: 0.00423 s
+
+Simulation Duration: 97078.52305 s
+Iterations: 4700000 - Time: 0.925
+Event Calendar: 183766 Entries left
+Event Handling Duration: 0.00410 s
+
+Simulation Duration: 97804.17196 s
+Iterations: 4800000 - Time: 0.944
+Event Calendar: 135213 Entries left
+Event Handling Duration: 0.00107 s
+
+Simulation Duration: 98341.77882 s
+Iterations: 4900000 - Time: 0.964
+Event Calendar: 86503 Entries left
+Event Handling Duration: 0.00122 s
+
+Simulation Duration: 99009.53512 s
+Iterations: 5000000 - Time: 0.984
+Event Calendar: 37793 Entries left
+
+Finished Simulation: 5084454 Events - 99692.8361 seconds
+
+Simulation Parameters: 
+ Simulation duration: 0.999 s
+ Number of queues: 15
+ Serving Bitrate: 1000.0Mbps
+ System Load: 90.0%
+
+Mean Packet Sizes:
+ I-frames: 1378.47 Byte
+ P-frames: 1366.37 Byte
+
+Mean inter-packet time:
+ All frames: 0.001874 ms
+ I-frames:   0.001799 ms
+ P-frames:   0.00189 ms
+
+Standard Deviation: 
+ All frames: 0.001717 ms
+ I-frames:   0.001321 ms
+ P-frames:   0.001789 ms
