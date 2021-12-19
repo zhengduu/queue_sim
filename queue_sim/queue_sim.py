@@ -476,6 +476,8 @@ def main(input_args, serving_bitrate, sim_par, debug):
     start_time = input_args.start_time
     sim_time = input_args.sim_time
     bg_traffic_type = input_args.bg
+    q_latency = 400e-9
+    
     try:
         debug = input_args.debug
     except: 
@@ -489,7 +491,8 @@ def main(input_args, serving_bitrate, sim_par, debug):
     # Create output save folder
     save_folder_name = f'{n_queues}Q - {sys_load*100}% Load - ' + \
                        f'{int(serving_bitrate/(1e9))}Gbps - ' + \
-                       f'{round(sim_time, 1)}s - {bg_traffic_type}'
+                       f'{round(sim_time, 1)}s - {bg_traffic_type} - ' + \
+                       f'{round(q_latency * 1e6, 2)}us'    
     output_save_path = file_folder + "\\Output\\" + save_folder_name    
     os.makedirs(output_save_path, exist_ok=True)
     
@@ -531,7 +534,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
             packet_counter = 0            
             for packet in range(packets_in_frame[frame][0], 
                                 packets_in_frame[frame][1] + 1):
-                sim_data['time'][packet] += packet_counter * 50e-6
+                sim_data['time'][packet] += packet_counter * q_latency
                 packet_counter += 1
         
         vr_timestamps = sim_data['time'].values.copy()
@@ -568,13 +571,13 @@ def main(input_args, serving_bitrate, sim_par, debug):
     # Add propagation delay depending on distance between Src and Dst
     if n_queues == 5: 
         # In NL - 15ms 
-        prop_delay = (15 / n_queues) * 0.001 # convert ms to s 
+        prop_delay = (0.3 / n_queues) * 0.001 # convert ms to s 
     elif n_queues == 10:
         # In West EU - 30ms 
-        prop_delay = (30 / n_queues) * 0.001
+        prop_delay = (3 / n_queues) * 0.001
     elif n_queues == 15:
         # Intercontinental - 150ms 
-        prop_delay = (150 / n_queues) * 0.001
+        prop_delay = (30 / n_queues) * 0.001
     else: 
         print("Please choose a number of queues on this list: [5 - 10 - 15]")
         raise SystemExit
@@ -635,9 +638,8 @@ def main(input_args, serving_bitrate, sim_par, debug):
     # last_event_time = np.zeros(n_queues)
     last_departure_time = np.zeros(n_queues)
 
-    start = time.time()
-            
-    q_latency = 50e-6
+    start = time.time()       
+    
     # test = "list"
     # print("--", test)
     
@@ -706,7 +708,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
             serving_time = next_event.packet.size / serving_bitrate      
             
             if curr_time >= last_departure_time[curr_queue]:     
-                new_departure_time = curr_time + serving_time + q_latency
+                new_departure_time = q_latency + curr_time + serving_time 
             else: 
                 new_departure_time = q_latency + serving_time + last_departure_time[
                                                         curr_queue] 
@@ -742,7 +744,8 @@ def main(input_args, serving_bitrate, sim_par, debug):
                 # Departure from last queue - send to BS
                 if next_queue >= n_queues:
                     # Save time for correct packet ID
-                    vr_timestamps_end[next_event.packet.id] = round(curr_time,9)   
+                    new_time = curr_time + prop_delay
+                    vr_timestamps_end[next_event.packet.id] = round(new_time,9)   
                     vr_timestamps_dep[next_queue-1][next_event.packet.id] = \
                         round(curr_time, 9)
                     vr_packet_counter += 1
