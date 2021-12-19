@@ -1,7 +1,7 @@
 PRIORITY 
 
 TIER 1:
-- Make histogram plot from output timestamps
+- Duplicate VR Stream (times x to fit load) instead of BG traffic -> add input parameter for that as well
 - Change sim_time parameter to "start" and "end" (put timestamps together at the end) 
 
 
@@ -12,4 +12,8 @@ TIER 2:
 
 TIER 3:
 
+
+OTHER:
+- Sabina Secret Santa Present!!!
+- Siegfried und Meimei Weihnachtsgeschenk!!!
 

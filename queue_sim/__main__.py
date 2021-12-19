@@ -17,9 +17,11 @@ def _parse_args() -> Namespace:
                             description="Reads and simulates VR packets going through network hops.")
 
     parser.add_argument('-trace', action='store', type=str, required=True, help="Input PCAP traces")
+    parser.add_argument('-bg', action='store', type=str, required=True, help="Type of background traffic")
     parser.add_argument('-queues', action='store', type=int, required=True, help="Number of queues")
     parser.add_argument('-load', action='store', type=float, required=True, help="System load")
-    parser.add_argument('-sim_time', action='append', type=float, required=True, help="Total simulation time")
+    parser.add_argument('-start_time', action='store', type=float, required=True, help="Simulation start time")
+    parser.add_argument('-sim_time', action='store', type=float, required=True, help="Simulation duration")
     # parser.add_argument('--debug', action='store', type=bool, required=False, help="Enter debug mode")
 
     # parser.add_argument('--output', action='store', type=str, required=True, help="Output PCAP file")

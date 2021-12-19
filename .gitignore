@@ -1,9 +1,7 @@
 /Other(ignore)/
 /Plots/
-/Output/
-/Output/old/
-/Output/test/
-/Output/new/
+/Output/*
+!/Output/new/
 /__pycache__/
 /queue_sim/__pycache__/
-queue_plots.py
+                    

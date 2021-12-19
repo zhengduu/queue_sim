@@ -7,6 +7,7 @@ Created on Wed Nov 24 21:40:30 2021
 
 import numpy as np
 import pandas as pd
+import random
 import matplotlib.pyplot as plt
 import time 
 import os
@@ -77,7 +78,7 @@ class Packet:
         
         
 def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load, 
-                              sim_time, debug): 
+                              start_time, sim_time, bg_traffic_type, debug): 
     """
     
 
@@ -126,92 +127,131 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
     nr_packets_per_s = int(bg_throughput / avg_packet_size)
     exp_time = round((1 / nr_packets_per_s), 9)
     
-    # print(exp_time, nr_packets_per_s, bg_throughput)
+    print(exp_time, nr_packets_per_s, bg_throughput)
       
-    # Generate all background packet arrivals in each queue
-    for q in range(queues):
-        
-        random_seed = q
-        
-        curr_time = 0.0000
-        bg_count = 0
-        # For debugging
-        bg_sizes = [] 
-        total_bg_sizes = 0
-        bg_times = []
-        
-        # Give every queue a different, but known seed
-        # if q == 1:
-        #     np.random.seed(0) # Seed 1 gives 100000+ background packets!!!
+    # Generate all background packet arrivals in each queue   
+    bg_sizes = [] 
+    total_bg_sizes = 0
+    if bg_traffic_type == "BG":         
+        for q in range(queues):
             
-        # else: 
-        np.random.seed(random_seed+5)
+            random_seed = q
             
-        while curr_time < sim_time: 
+            curr_time = 0.0000
+            bg_count = 0
+            # For debugging
+            bg_times = []
             
-            if debug[0]:
-                                
-                if bg_count > debug[1]:
-                    break
-            
-            """                     
-            # Hyper-exponentially distributed packet size
-            # Flip biased coin
-            # if ut.success_coin_flip(exp_size[0]):
-                # First exponential distribution       
-                # if debug[0]:    
-                #     print(f"Queue: {q} - Distribution {exp_size[1]} ")
-            #     new_size = int(np.random.exponential(exp_size[1]))                    
+            # Give every queue a different, but known seed
+            # if q == 1:
+            #     np.random.seed(0) # Seed 1 gives 100000+ background packets!!!
                 
             # else: 
-                # Second exponential distribution
-                # if debug[0]:    
-                #     print(f"Queue: {q} - Distribution {exp_size[2]} ")
-            #     new_size = int(np.random.exponential(exp_size[2]))                    
-            """
-                        
-            # tic = time.perf_counter()            
-            # toc = time.perf_counter()
-            # print(f"{toc-tic:0.9f}")
-            # raise SystemExit
-                        
-            # Sample from trimodal packet size distribution
-            new_size = np.random.choice(packet_sizes, p=packet_prob)
-            
-            # Get exponentially distributed inter-packet arrival times
-            inter_arr_time = np.random.exponential(exp_time)   
-            # Avoid values smaller than 1 microsecond (or nanosecond?)
-            if inter_arr_time <= 0:
-                inter_arr_time = 1e-6
+            np.random.seed(random_seed+5)
                 
-            curr_time += inter_arr_time 
-            
-            # Create new BG packet and add to event calendar 
-            if curr_time < sim_time:
-                bg_packet = Packet(packet_id=-1, packet_size=new_size, queue=q, 
-                                   # arr_time=curr_time, dep_time=None, 
-                                   packet_type='BG')
+            while curr_time < sim_time: 
+                
                 if debug[0]:
-                    event_calendar.append(Event(curr_time, 'packet_arrival', q, 
-                                            bg_packet))
-                    bg_sizes.append(new_size)
-                    bg_times.append(round(curr_time, 9))
-
-                else:
-                    event_calendar.append(Event(curr_time, 'packet_arrival', q, 
-                                            bg_packet))
-                    event_times_lst.append(curr_time) 
-                    # = np.append(event_times, curr_time)
-                    
-            bg_count += 1
-            total_bg_sizes += new_size
-        all_bg_sizes.append(total_bg_sizes)
-        
-        # if debug[0]:
-        # print(f"\nQueue: {q} - BG packets: {bg_count}" + 
-        #       f"\n Total: {total_bg_sizes}")
-                  # f"\nTimes: {bg_times} - \nSizes: {bg_sizes} ")
+                                    
+                    if bg_count > debug[1]:
+                        break
                 
+                """                     
+                # Hyper-exponentially distributed packet size
+                # Flip biased coin
+                # if ut.success_coin_flip(exp_size[0]):
+                    # First exponential distribution       
+                    # if debug[0]:    
+                    #     print(f"Queue: {q} - Distribution {exp_size[1]} ")
+                #     new_size = int(np.random.exponential(exp_size[1]))                    
+                    
+                # else: 
+                    # Second exponential distribution
+                    # if debug[0]:    
+                    #     print(f"Queue: {q} - Distribution {exp_size[2]} ")
+                #     new_size = int(np.random.exponential(exp_size[2]))                    
+                """
+                            
+                # Sample from trimodal packet size distribution
+                new_size = np.random.choice(packet_sizes, p=packet_prob)
+                
+                # Get exponentially distributed inter-packet arrival times
+                inter_arr_time = np.random.exponential(exp_time)   
+                # Avoid values smaller than 1 microsecond (or nanosecond?)
+                if inter_arr_time <= 0:
+                    inter_arr_time = 1e-6
+                    
+                curr_time += inter_arr_time 
+                
+                # Create new BG packet and add to event calendar 
+                if curr_time < sim_time:
+                    bg_packet = Packet(packet_id=-1, packet_size=new_size, 
+                                       queue=q, packet_type='BG')
+                    if debug[0]:
+                        event_calendar.append(Event(curr_time, 'packet_arrival', 
+                                                    q, bg_packet))
+                        bg_sizes.append(new_size)
+                        bg_times.append(round(curr_time, 9))
+    
+                    else:
+                        event_calendar.append(Event(curr_time, 'packet_arrival', 
+                                                    q, bg_packet))
+                        event_times_lst.append(curr_time) 
+                        # = np.append(event_times, curr_time)
+                        
+                bg_count += 1
+                total_bg_sizes += new_size
+            all_bg_sizes.append(total_bg_sizes)
+            
+            # if debug[0]:
+            # print(f"\nQueue: {q} - BG packets: {bg_count}" + 
+            #       f"\n Total: {total_bg_sizes}")
+                      # f"\nTimes: {bg_times} - \nSizes: {bg_sizes} ")
+    elif bg_traffic_type == "VR": 
+        # Take total sim_time 
+        # For each queue, split up into sequences based on load
+        # Get random intervals, summing up to interframe time
+        # Add interval as delta to all packets of one VR timestamp set
+        # Append all in event calendar
+        
+        # total_time = sim_time
+        nr_vr_streams = int(sys_load/0.05) # 50Mbps BG streams
+        frametime = 1/30
+        np.random.seed(0)
+        stream_delays = np.random.uniform(0, frametime, nr_vr_streams*queues)
+        stream_counter = 0
+        # TODO
+        for q in range(queues):
+            for stream in range(nr_vr_streams):
+                curr_time = 0.0000
+                bg_counter = 0
+                
+                new_timestamps = vr_timestamps + stream_delays[stream_counter]
+                stream_counter += 1
+                
+                total_packets = len(new_timestamps)
+                while curr_time <= sim_time and bg_counter < total_packets:
+                    
+                    curr_time = new_timestamps[bg_counter]
+                    new_size = vr_sizes[bg_counter]
+                    
+                    if curr_time < sim_time:
+                        bg_packet = Packet(packet_id=-1, packet_size=new_size, 
+                                           queue=q, packet_type='BG')                                                   
+                        event_calendar.append(Event(curr_time, 'packet_arrival', 
+                                                    q, bg_packet))
+                        # Copy new timestamp to list as well
+                        event_times_lst.append(curr_time)
+                        
+                    bg_counter += 1    
+                    total_bg_sizes += new_size
+                all_bg_sizes.append(total_bg_sizes)
+        
+    else: 
+        print("Please choose one of the following as background traffic:" +
+              "\n'BG' - 'VR'")
+        raise SystemExit
+            
     # print("all BG sizes", all_bg_sizes)
         
     # Generate all packet arrivals for VR packets at the first queue
@@ -254,7 +294,9 @@ def calc_dispersion(timestamps_arr, timestamps_dep, timestamps_end, frames,
     n_queues  = queue_par[0]     
     serving_bitrate = queue_par[1]
     sys_load  = queue_par[2]
-    sim_time  = queue_par[3]   
+    start_time  = queue_par[3]   
+    sim_time  = queue_par[4]
+    bg_traffic_type = queue_par[5]
     
     # Time spend in each queue by each packet dim (nr_packets x nr_queues)
     timestamps_diff = timestamps_dep - timestamps_arr
@@ -349,15 +391,19 @@ def calc_dispersion(timestamps_arr, timestamps_dep, timestamps_end, frames,
     mean_sizes_P = round(np.mean(sizes_P), 2)           
     
     print("\nSimulation Parameters:",
-          f"\n Simulation duration: {sim_time} s" +
-          f"\n Number of queues: {n_queues}" + 
-          f"\n Serving Bitrate: {serving_bitrate/1000000}Mbps" +  
+         f"\n Simulation start: {start_time} s" +
+         f"\n Simulation duration: {sim_time} s" +
+         f"\n Number of queues: {n_queues}" + 
+         f"\n Background traffic type: {bg_traffic_type}" + 
+         f"\n Serving Bitrate: {serving_bitrate/1000000}Mbps" +  
           f"\n System Load: {sys_load*100}%")
     
     with open(txt_log_file, "a") as log_file:
         print("\nSimulation Parameters:",
+              f"\n Simulation start: {start_time} s" +
               f"\n Simulation duration: {sim_time} s" +
               f"\n Number of queues: {n_queues}" + 
+              f"\n Background traffic type: {bg_traffic_type}" + 
               f"\n Serving Bitrate: {serving_bitrate/1000000}Mbps" +  
               f"\n System Load: {sys_load*100}%", file=log_file)
         
@@ -427,8 +473,9 @@ def main(input_args, serving_bitrate, sim_par, debug):
     vr_file_name = input_args.trace # "trace_0.csv"
     n_queues = input_args.queues
     sys_load = input_args.load
-    start_sim = input_args.sim_time[0]
-    sim_time = input_args.sim_time[1]
+    start_time = input_args.start_time
+    sim_time = input_args.sim_time
+    bg_traffic_type = input_args.bg
     try:
         debug = input_args.debug
     except: 
@@ -442,7 +489,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     # Create output save folder
     save_folder_name = f'{n_queues}Q - {sys_load*100}% Load - ' + \
                        f'{int(serving_bitrate/(1e9))}Gbps - ' + \
-                       f'{round(sim_time, 1)}s'
+                       f'{round(sim_time, 1)}s - {bg_traffic_type}'
     output_save_path = file_folder + "\\Output\\" + save_folder_name    
     os.makedirs(output_save_path, exist_ok=True)
     
@@ -533,15 +580,19 @@ def main(input_args, serving_bitrate, sim_par, debug):
         raise SystemExit
     
     print("\nSimulation Parameters:",
+          f"\n Simulation start: {start_time} s" +
           f"\n Simulation duration: {sim_time} s" +
           f"\n Number of queues: {n_queues}" + 
+          f"\n Background traffic type: {bg_traffic_type}" + 
           f"\n Serving Bitrate: {serving_bitrate/1000000}Mbps" +  
           f"\n System Load: {sys_load*100}%")
     
     with open(txt_log_file, "w") as log_file:        
         print("\nSimulation Parameters:",
+              f"\n Simulation start: {start_time} s" +
               f"\n Simulation duration: {sim_time} s" +
               f"\n Number of queues: {n_queues}" + 
+              f"\n Background traffic type: {bg_traffic_type}" + 
               f"\n Serving Bitrate: {serving_bitrate/1000000}Mbps" +  
               f"\n System Load: {sys_load*100}%", file=log_file)
         log_file.close()
@@ -552,7 +603,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     tic = time.perf_counter()    
     event_calendar, event_times_lst, total_vr_packets, bg_packets = \
         initialise_event_calendar(vr_timestamps, vr_sizes, n_queues, sys_load, 
-                                  sim_time, debug)
+                                  start_time, sim_time, bg_traffic_type, debug)
         
     event_times = np.array(event_times_lst)
     
@@ -754,7 +805,8 @@ def main(input_args, serving_bitrate, sim_par, debug):
     dispersion = True
     if dispersion:
         
-        queue_par = [n_queues, serving_bitrate, sys_load, sim_time]
+        queue_par = [n_queues, serving_bitrate, sys_load, start_time, 
+                     sim_time, bg_traffic_type]
         
         print("Calculating Dispersion Metrics...")
         
