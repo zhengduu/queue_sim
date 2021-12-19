@@ -7,6 +7,7 @@ Created on Wed Nov 24 21:40:30 2021
 
 import numpy as np
 import pandas as pd
+import random
 import matplotlib.pyplot as plt
 import time 
 import os
@@ -128,17 +129,17 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
     
     print(exp_time, nr_packets_per_s, bg_throughput)
       
-    # Generate all background packet arrivals in each queue
-    for q in range(queues):
-        
-        if bg_traffic_type == "BG": 
+    # Generate all background packet arrivals in each queue   
+    bg_sizes = [] 
+    total_bg_sizes = 0
+    if bg_traffic_type == "BG":         
+        for q in range(queues):
+            
             random_seed = q
             
             curr_time = 0.0000
             bg_count = 0
             # For debugging
-            bg_sizes = [] 
-            total_bg_sizes = 0
             bg_times = []
             
             # Give every queue a different, but known seed
@@ -171,11 +172,6 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
                 #     new_size = int(np.random.exponential(exp_size[2]))                    
                 """
                             
-                # tic = time.perf_counter()            
-                # toc = time.perf_counter()
-                # print(f"{toc-tic:0.9f}")
-                # raise SystemExit
-                            
                 # Sample from trimodal packet size distribution
                 new_size = np.random.choice(packet_sizes, p=packet_prob)
                 
@@ -189,18 +185,17 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
                 
                 # Create new BG packet and add to event calendar 
                 if curr_time < sim_time:
-                    bg_packet = Packet(packet_id=-1, packet_size=new_size, queue=q, 
-                                       # arr_time=curr_time, dep_time=None, 
-                                       packet_type='BG')
+                    bg_packet = Packet(packet_id=-1, packet_size=new_size, 
+                                       queue=q, packet_type='BG')
                     if debug[0]:
-                        event_calendar.append(Event(curr_time, 'packet_arrival', q, 
-                                                bg_packet))
+                        event_calendar.append(Event(curr_time, 'packet_arrival', 
+                                                    q, bg_packet))
                         bg_sizes.append(new_size)
                         bg_times.append(round(curr_time, 9))
     
                     else:
-                        event_calendar.append(Event(curr_time, 'packet_arrival', q, 
-                                                bg_packet))
+                        event_calendar.append(Event(curr_time, 'packet_arrival', 
+                                                    q, bg_packet))
                         event_times_lst.append(curr_time) 
                         # = np.append(event_times, curr_time)
                         
@@ -212,41 +207,50 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
             # print(f"\nQueue: {q} - BG packets: {bg_count}" + 
             #       f"\n Total: {total_bg_sizes}")
                       # f"\nTimes: {bg_times} - \nSizes: {bg_sizes} ")
-        elif bg_traffic_type == "VR": 
-            pass
+    elif bg_traffic_type == "VR": 
         # Take total sim_time 
         # For each queue, split up into sequences based on load
         # Get random intervals, summing up to interframe time
         # Add interval as delta to all packets of one VR timestamp set
         # Append all in event calendar
-        # Copy code below (very similar, only add another outer loop!)
         
+        # total_time = sim_time
+        nr_vr_streams = int(sys_load/0.05) # 50Mbps BG streams
+        frametime = 1/30
+        np.random.seed(0)
+        stream_delays = np.random.uniform(0, frametime, nr_vr_streams*queues)
+        stream_counter = 0
         # TODO
-        curr_time = 0.0000
-        vr_packet_counter = 0
-        total_packets = len(vr_timestamps)
-        
-        while curr_time <= sim_time and vr_packet_counter < total_packets:
-            
-            curr_time = vr_timestamps[vr_packet_counter]
-            new_size = vr_sizes[vr_packet_counter]
-            
-            if curr_time < sim_time:
+        for q in range(queues):
+            for stream in range(nr_vr_streams):
+                curr_time = 0.0000
+                bg_packet_counter = 0
                 
-                vr_packet = Packet(packet_id=vr_packet_counter, packet_size=new_size,
-                                   queue=0, packet_type = 'VR')                                
-                event_calendar.append(Event(curr_time, 'packet_arrival', 0, 
-                                            vr_packet))
-                # Copy new timestamp to list as well
-                event_times_lst.append(curr_time) #np.append(event_times, curr_time)
+                new_timestamps = vr_timestamps + stream_delays[stream_counter]
+                stream_counter += 1
                 
-            vr_packet_counter += 1    
+                total_packets = len(new_timestamps)
+                while curr_time <= sim_time and bg_packet_counter < total_packets:
+                    
+                    curr_time = new_timestamps[bg_packet_counter]
+                    new_size = vr_sizes[bg_packet_counter]
+                    
+                    if curr_time < sim_time:
+                        bg_packet = Packet(packet_id=-1, packet_size=new_size, 
+                                           queue=q, packet_type='BG')                                                   
+                        event_calendar.append(Event(curr_time, 'packet_arrival', 
+                                                    q, bg_packet))
+                        # Copy new timestamp to list as well
+                        event_times_lst.append(curr_time)
+                        
+                    bg_packet_counter += 1    
+                    total_bg_sizes += new_size
+                all_bg_sizes.append(total_bg_sizes)
         
-        
-        else: 
-            print("Please choose one of the following as background traffic:" +
-                  "\n'BG' - 'VR'")
-            raise SystemExit
+    else: 
+        print("Please choose one of the following as background traffic:" +
+              "\n'BG' - 'VR'")
+        raise SystemExit
             
     # print("all BG sizes", all_bg_sizes)
         
