@@ -216,7 +216,7 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
         
         # total_time = sim_time
         nr_vr_streams = int(sys_load/0.05) # 50Mbps BG streams
-        frametime = 1/30
+        frametime = 1 / 30
         np.random.seed(0)
         stream_delays = np.random.uniform(0, frametime, nr_vr_streams*queues)
         stream_counter = 0
@@ -531,7 +531,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
             packet_counter = 0            
             for packet in range(packets_in_frame[frame][0], 
                                 packets_in_frame[frame][1] + 1):
-                sim_data['time'][packet] += packet_counter * 1e-6
+                sim_data['time'][packet] += packet_counter * 50e-6
                 packet_counter += 1
         
         vr_timestamps = sim_data['time'].values.copy()
@@ -637,6 +637,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
 
     start = time.time()
             
+    q_latency = 50e-6
     # test = "list"
     # print("--", test)
     
@@ -705,9 +706,9 @@ def main(input_args, serving_bitrate, sim_par, debug):
             serving_time = next_event.packet.size / serving_bitrate      
             
             if curr_time >= last_departure_time[curr_queue]:     
-                new_departure_time = curr_time + serving_time 
+                new_departure_time = curr_time + serving_time + q_latency
             else: 
-                new_departure_time = serving_time + last_departure_time[
+                new_departure_time = q_latency + serving_time + last_departure_time[
                                                         curr_queue] 
                 
             # Update last departure time for respective queue
