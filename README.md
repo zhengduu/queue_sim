@@ -11,7 +11,7 @@
 In repo folder: 
 
 ```bash 
-python -m queue_sim -trace trace_to_simulate.csv -queues number_of_queues -load network_load -sim_time start_time -sim_time end_time
+python -m queue_sim -trace trace_APP50.csv -bg VR -queues 5 -load 0.9 -start_time 1.0 -sim_time 0.999
 ```
 # Notes:
 - All VR traces need to be in "VR_traces" folder
