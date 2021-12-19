@@ -1,0 +1,19 @@
+PRIORITY 
+
+TIER 1:
+- Duplicate VR Stream (times x to fit load) instead of BG traffic -> add input parameter for that as well
+- Change sim_time parameter to "start" and "end" (put timestamps together at the end) 
+
+
+TIER 2:
+- Integrate input function for simulated incoming timestamps in application_traffic
+- Create default event_lists for background packets with multiple sets of parameters to load into simulation
+- Integrate Multiprocessing (similar to 
+
+TIER 3:
+
+
+OTHER:
+- Sabina Secret Santa Present!!!
+- Siegfried und Meimei Weihnachtsgeschenk!!!
+

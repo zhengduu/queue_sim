@@ -1,6 +1,7 @@
 /Other(ignore)/
 /Plots/
-/Output/
-/Output/test/
+/Output/*
+!/Output/new/
 /__pycache__/
 /queue_sim/__pycache__/
+                    
