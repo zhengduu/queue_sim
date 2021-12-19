@@ -214,6 +214,35 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
                       # f"\nTimes: {bg_times} - \nSizes: {bg_sizes} ")
         elif bg_traffic_type == "VR": 
             pass
+        # Take total sim_time 
+        # For each queue, split up into sequences based on load
+        # Get random intervals, summing up to interframe time
+        # Add interval as delta to all packets of one VR timestamp set
+        # Append all in event calendar
+        # Copy code below (very similar, only add another outer loop!)
+        
+        # TODO
+        curr_time = 0.0000
+        vr_packet_counter = 0
+        total_packets = len(vr_timestamps)
+        
+        while curr_time <= sim_time and vr_packet_counter < total_packets:
+            
+            curr_time = vr_timestamps[vr_packet_counter]
+            new_size = vr_sizes[vr_packet_counter]
+            
+            if curr_time < sim_time:
+                
+                vr_packet = Packet(packet_id=vr_packet_counter, packet_size=new_size,
+                                   queue=0, packet_type = 'VR')                                
+                event_calendar.append(Event(curr_time, 'packet_arrival', 0, 
+                                            vr_packet))
+                # Copy new timestamp to list as well
+                event_times_lst.append(curr_time) #np.append(event_times, curr_time)
+                
+            vr_packet_counter += 1    
+        
+        
         else: 
             print("Please choose one of the following as background traffic:" +
                   "\n'BG' - 'VR'")
