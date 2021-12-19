@@ -224,16 +224,16 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
         for q in range(queues):
             for stream in range(nr_vr_streams):
                 curr_time = 0.0000
-                bg_packet_counter = 0
+                bg_counter = 0
                 
                 new_timestamps = vr_timestamps + stream_delays[stream_counter]
                 stream_counter += 1
                 
                 total_packets = len(new_timestamps)
-                while curr_time <= sim_time and bg_packet_counter < total_packets:
+                while curr_time <= sim_time and bg_counter < total_packets:
                     
-                    curr_time = new_timestamps[bg_packet_counter]
-                    new_size = vr_sizes[bg_packet_counter]
+                    curr_time = new_timestamps[bg_counter]
+                    new_size = vr_sizes[bg_counter]
                     
                     if curr_time < sim_time:
                         bg_packet = Packet(packet_id=-1, packet_size=new_size, 
@@ -243,7 +243,7 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
                         # Copy new timestamp to list as well
                         event_times_lst.append(curr_time)
                         
-                    bg_packet_counter += 1    
+                    bg_counter += 1    
                     total_bg_sizes += new_size
                 all_bg_sizes.append(total_bg_sizes)
         
