@@ -1,0 +1,19 @@
+
+Simulation Parameters: 
+ Simulation start: 1.0 s
+ Simulation duration: 0.999 s
+ Number of queues: 5
+ Background traffic type: VR
+ Serving Bitrate: 1000.0Mbps
+ System Load: 120.0%
+Initializing Event Calendar: 1.1634 seconds
+Total start events: 345092
+
+Simulation Duration: 0.01563 s
+Iterations: 0 - Time: 0.0
+Event Calendar: 345091 Entries left
+Event Handling Duration: 0.00275 s
+
+Simulation Duration: 453.40747 s
+Iterations: 100000 - Time: 0.135
+Event Calendar: 296832 Entries left
