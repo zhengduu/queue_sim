@@ -476,7 +476,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     start_time = input_args.start_time
     sim_time = input_args.sim_time
     bg_traffic_type = input_args.bg
-    q_latency = 400e-9
+    q_latency = 10e-6 # based on paper
     
     try:
         debug = input_args.debug
@@ -520,7 +520,27 @@ def main(input_args, serving_bitrate, sim_par, debug):
         
         # Create list for start and final packet index of each frame
         packets_in_frame = list(range(sim_data["frame"].iloc[-1] + 1))
-                
+          
+        """
+        TODO: 
+        Calculate interpacket_time tau, such that
+        - On average, the total time for packets of one frame to be send out
+          is 0.5 x inter-frame time
+        - The time for all packets of a frame to be send out should not 
+          exceed the inter-frame time (too often)
+       
+        How:
+            - Calculate for every individual frame of the video time the tau_i
+              for which packets of said frame would be send out after 0.5x1/fps
+            - Average over all tau_i's of all frames -> that is the final tau  
+            
+            -> Calculate for every frame the number of packets
+            -> Calculate nr_packets/0.5xframetime per frame
+            -> average of all frames
+        
+        """
+        interpacket_time = 1e-6
+        
         # Add inter-packet time of 1 microsecond per packet for each frame         
         for frame in range(sim_data['frame'].iloc[-1] + 1):
             # Save indices of current frame in list
@@ -534,7 +554,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
             packet_counter = 0            
             for packet in range(packets_in_frame[frame][0], 
                                 packets_in_frame[frame][1] + 1):
-                sim_data['time'][packet] += packet_counter * q_latency
+                sim_data['time'][packet] += packet_counter * interpacket_time
                 packet_counter += 1
         
         vr_timestamps = sim_data['time'].values.copy()
@@ -570,13 +590,13 @@ def main(input_args, serving_bitrate, sim_par, debug):
     
     # Add propagation delay depending on distance between Src and Dst
     if n_queues == 5: 
-        # In NL - 15ms 
+        # In NL - 0.3 ms
         prop_delay = (0.3 / n_queues) * 0.001 # convert ms to s 
     elif n_queues == 10:
-        # In West EU - 30ms 
+        # In West EU - 3ms 
         prop_delay = (3 / n_queues) * 0.001
     elif n_queues == 15:
-        # Intercontinental - 150ms 
+        # Intercontinental - 30ms 
         prop_delay = (30 / n_queues) * 0.001
     else: 
         print("Please choose a number of queues on this list: [5 - 10 - 15]")
@@ -700,9 +720,9 @@ def main(input_args, serving_bitrate, sim_par, debug):
         if next_event.action == 'packet_arrival':
             
             # Save arrival time at queue if VR packet
-            if next_event.packet_type == 'VR': 
-                vr_timestamps_arr[next_event.queue][next_event.packet.id] = \
-                    round(next_event.time, 9)              
+            # if next_event.packet_type == 'VR': 
+            #     vr_timestamps_arr[next_event.queue][next_event.packet.id] = \
+            #         round(next_event.time, 9)              
                             
             # Calculate departure time for packet
             serving_time = next_event.packet.size / serving_bitrate      
