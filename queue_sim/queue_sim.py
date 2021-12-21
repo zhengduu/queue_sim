@@ -476,7 +476,8 @@ def main(input_args, serving_bitrate, sim_par, debug):
     start_time = input_args.start_time
     sim_time = input_args.sim_time
     bg_traffic_type = input_args.bg
-    q_latency = 10e-6 # based on paper
+    q_latency = 10e-6 # based on paper 
+    # Alternative: 500 ns (based on newer stat sheet)
     
     try:
         debug = input_args.debug
@@ -499,7 +500,25 @@ def main(input_args, serving_bitrate, sim_par, debug):
     # Txt file with print logs
     log_name = save_folder_name + f' - {vr_file_name} - log.txt' 
     txt_log_file = output_save_path + "\\" + log_name
+        
+    print("\nSimulation Parameters:",
+          f"\n Simulation start: {start_time} s" +
+          f"\n Simulation duration: {sim_time} s" +
+          f"\n Number of queues: {n_queues}" + 
+          f"\n Background traffic type: {bg_traffic_type}" + 
+          f"\n Serving Bitrate: {serving_bitrate/1000000}Mbps" +  
+          f"\n System Load: {sys_load*100}%")
     
+    with open(txt_log_file, "w") as log_file:        
+        print("\nSimulation Parameters:",
+              f"\n Simulation start: {start_time} s" +
+              f"\n Simulation duration: {sim_time} s" +
+              f"\n Number of queues: {n_queues}" + 
+              f"\n Background traffic type: {bg_traffic_type}" + 
+              f"\n Serving Bitrate: {serving_bitrate/1000000}Mbps" +  
+              f"\n System Load: {sys_load*100}%", file=log_file)
+        log_file.close()
+        
     # Use real video data   
     if sim_par.use_pcap == True: 
                 
@@ -513,8 +532,6 @@ def main(input_args, serving_bitrate, sim_par, debug):
         # Set all packets belonging to same frame to frame generation time 
         fps = 30 # int(np.ceil(sim_data["frame"].iloc[-1] / sim_data["time"].iloc[-1]))
         frame_time = 1 / fps
-        # Cut dataframe until total simulation time by frame number
-        sim_data = sim_data[((sim_data['frame']/fps) <= sim_time)]          
         
         sim_data['time'] = sim_data['frame'] * frame_time 
         
@@ -551,21 +568,48 @@ def main(input_args, serving_bitrate, sim_par, debug):
             packets_in_frame[frame].append(sim_data.index[sim_data['frame'] == 
                                                        frame][-1].tolist())
         
-        nr_packets_in_frame = []
+        # Calculate for every frame the number of packets
+        nr_packets_in_frame = list(range(len(packets_in_frame)))
+        # Calculate desired dispersion over nr_packets oer frame
+        interpacket_time_frame = list(range(len(packets_in_frame)))
+        # Average interpacket time over all frames
+        
+        # Desired burstiness
+        burstiness = 0.6 # Set by asking Rick
+        dispersion_per_frame = frame_time * (1 - burstiness)
+
         for frame in range(len(packets_in_frame)):
-            # Add one microsecond inter-packet time 
+            nr_packets_in_frame[frame] = packets_in_frame[frame][1] - \
+                                         packets_in_frame[frame][0] + 1 
+            interpacket_time_frame[frame] =  dispersion_per_frame / \
+                                             nr_packets_in_frame[frame]
+
+        max_inter_packet_time = frame_time / max(nr_packets_in_frame)
+
+        interpacket_time = sum(interpacket_time_frame) / \
+                           len(interpacket_time_frame)
+
+        if interpacket_time >= max_inter_packet_time:
+            interpacket_time = max_inter_packet_time
+            # print("max")
+
+        for frame in range(len(packets_in_frame)):
+            # Add calculated interpacket time to packets 
             packet_counter = 0            
             for packet in range(packets_in_frame[frame][0], 
                                 packets_in_frame[frame][1] + 1):
                 sim_data['time'][packet] += packet_counter * interpacket_time
                 packet_counter += 1
+                
+        # Cut dataframe until total simulation time based on frame number
+        sim_data = sim_data[((sim_data['frame']/fps) <= sim_time)]          
         
+        # Copy timestamps 
         vr_timestamps = sim_data['time'].values.copy()
         vr_sizes = sim_data['size'].values.copy() 
-        # For dispersion metric
+        # For calculations later
         vr_frames = sim_data['frame'].values.copy()
-        vr_frametypes = sim_data['frametype'].values.copy() 
-        
+        vr_frametypes = sim_data['frametype'].values.copy()         
         
         if debug[0]:
             test_number = debug[1]
@@ -605,27 +649,14 @@ def main(input_args, serving_bitrate, sim_par, debug):
         print("Please choose a number of queues on this list: [5 - 10 - 15]")
         raise SystemExit
     
-    print("\nSimulation Parameters:",
-          f"\n Simulation start: {start_time} s" +
-          f"\n Simulation duration: {sim_time} s" +
-          f"\n Number of queues: {n_queues}" + 
-          f"\n Background traffic type: {bg_traffic_type}" + 
-          f"\n Serving Bitrate: {serving_bitrate/1000000}Mbps" +  
-          f"\n System Load: {sys_load*100}%")
-    
-    with open(txt_log_file, "w") as log_file:        
-        print("\nSimulation Parameters:",
-              f"\n Simulation start: {start_time} s" +
-              f"\n Simulation duration: {sim_time} s" +
-              f"\n Number of queues: {n_queues}" + 
-              f"\n Background traffic type: {bg_traffic_type}" + 
-              f"\n Serving Bitrate: {serving_bitrate/1000000}Mbps" +  
-              f"\n System Load: {sys_load*100}%", file=log_file)
-        log_file.close()
 
     toc = time.perf_counter()
-    # print(f"Initializing Video File: {toc-tic:0.4f} seconds")
-    
+    print(f"\nInitializing Video File: {toc-tic:0.4f} seconds")
+    with open(txt_log_file, "a") as log_file:            
+        print(f"\nInitializing Video File: {toc-tic:0.4f} seconds", 
+              file=log_file)
+        log_file.close()
+        
     tic = time.perf_counter()    
     event_calendar, event_times_lst, total_vr_packets, bg_packets = \
         initialise_event_calendar(vr_timestamps, vr_sizes, n_queues, sys_load, 
