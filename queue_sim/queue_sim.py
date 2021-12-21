@@ -522,7 +522,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
         packets_in_frame = list(range(sim_data["frame"].iloc[-1] + 1))
           
         """
-        TODO: 
+        TODO
         Calculate interpacket_time tau, such that
         - On average, the total time for packets of one frame to be send out
           is 0.5 x inter-frame time
@@ -541,7 +541,8 @@ def main(input_args, serving_bitrate, sim_par, debug):
         """
         interpacket_time = 1e-6
         
-        # Add inter-packet time of 1 microsecond per packet for each frame         
+        # Add inter-packet time of 1 microsecond per packet for each frame  
+        # Add specific tau based on interframe time and burstiness 
         for frame in range(sim_data['frame'].iloc[-1] + 1):
             # Save indices of current frame in list
             packets_in_frame[frame] = [] # start with empty list
@@ -549,7 +550,9 @@ def main(input_args, serving_bitrate, sim_par, debug):
                                                        frame][0].tolist())
             packets_in_frame[frame].append(sim_data.index[sim_data['frame'] == 
                                                        frame][-1].tolist())
-            
+        
+        nr_packets_in_frame = []
+        for frame in range(len(packets_in_frame)):
             # Add one microsecond inter-packet time 
             packet_counter = 0            
             for packet in range(packets_in_frame[frame][0], 

@@ -12,23 +12,24 @@ import os
 import sys
 
 
-def plot_dispersion(input_folder, input_folder2, input_folder3, input_file, 
+def plot_dispersion(input_folder1, input_folder2, input_folder3, input_file, 
                     plot, save):
     
     serving_bitrate = 1e9
-    n_queues = [input_folder.strip(" - ")[1], input_folder2.strip(" - ")[1],
+    n_queues = [input_folder1.strip(" - ")[1], input_folder2.strip(" - ")[1],
                 input_folder3.strip(" - ")[1],]
     sys_load = [20, 50, 90]
     
     # file_folder = r'C:\Zheng Data\TU Delft\Thesis\Thesis Work\GitHub\queue_sim\Output\test'
-    file_folder = os.getcwd().strip("queue_sim") + "Output\\new"    
-    file_to_plot = file_folder + input_folder + input_file # "trace__end.csv"
-    file_to_plot2 = file_folder + input_folder2 + input_file
-    file_to_plot3 = file_folder + input_folder3 + input_file
-    print(file_to_plot)
+    file_folder = os.getcwd().strip("queue_sim") + "Output"    
+    # "trace_APP50_end.csv"
+    file_to_plot1 = file_folder + '\\' + input_folder1 + '\\' + input_file 
+    file_to_plot2 = file_folder + '\\' + input_folder2 + '\\' + input_file
+    file_to_plot3 = file_folder + '\\' + input_folder3 + '\\' + input_file
+    
     output_folder = os.getcwd().strip("queue_sim") + '\\Plots\\'  
     
-    data1 = pd.read_csv(file_to_plot, encoding='utf-8')
+    data1 = pd.read_csv(file_to_plot1, encoding='utf-8')
     data2 = pd.read_csv(file_to_plot2, encoding='utf-8')
     data3 = pd.read_csv(file_to_plot3, encoding='utf-8')
     
@@ -47,7 +48,7 @@ def plot_dispersion(input_folder, input_folder2, input_folder3, input_file,
     key_int = 10
     GoP_duration = key_int * (1/30)
     total_duration = np.ceil(plot_data1[-1])
-    total_ttis = int(total_duration / tti_duration)
+    total_ttis = int((total_duration / tti_duration) / 10)
     GoP_ttis = int(GoP_duration / tti_duration)
     
     packets_per_tti1 = np.zeros((total_ttis))
@@ -75,6 +76,7 @@ def plot_dispersion(input_folder, input_folder2, input_folder3, input_file,
         
     # print("TTIs: ", np.size(np.where(packets_per_tti > 0)))
 
+    """
     # Queues: 5 - 10 - 15 - diff load
     mean_queues_20 = [0.138, 0.194, 0.419]
     mean_queues_50 = [0.138, 0.194, 0.419]
@@ -124,9 +126,10 @@ def plot_dispersion(input_folder, input_folder2, input_folder3, input_file,
     sd_load_5_P = [2.165, 0.395, 0.077]
     sd_load_10_P = [2.165, 0.395, 0.077]
     sd_load_15_P = [2.165, 0.395, 0.077]
+    """
     
     # raise SystemExit
-    x_axis = np.arange(40,60) # total_ttis/2)
+    x_axis = np.arange(0,int(total_ttis))
     x_axis_GoP = np.arange(0,GoP_ttis)
     
     x_axis_queues = ['5', '10', '15']
@@ -138,9 +141,13 @@ def plot_dispersion(input_folder, input_folder2, input_folder3, input_file,
 #############################        
         plt.figure(figsize=(30,20))
         plt.title("Arrival packets per TTI after all queues" + "\n" +
-                     f"\n Serving Bitrate: {serving_bitrate/1000000}Mbps" +  
+                  "VR background traffic", 
+                  # f"{input_folder1.split('- VR')[0]} & \n" + 
+                  # f"{input_folder2.split('- VR')[0]} & \n" + 
+                  # f"{input_folder3.split('- VR')[0]}",
+                    # f"\n Serving Bitrate: {serving_bitrate/1000000}Mbps" +  
                     # "\n Load: 20%",
-                    f"\n Number of queues: {n_queues[0]}",  
+                    # f"\n Number of queues: {n_queues[0]}",  
                      # f"\n System Load: {sys_load[0]}%",                     
                      fontsize=20, fontweight='bold') 
         
@@ -150,28 +157,37 @@ def plot_dispersion(input_folder, input_folder2, input_folder3, input_file,
         plt.xticks(fontsize=16)
         plt.ylabel('Number of packets', fontsize=20)
         plt.yticks(fontsize=16)
-        plt.ylim(0, 200) # np.nanmax(packets_per_tti1) + 10)     
-        plt.scatter(x_axis, packets_per_tti1[40:int(60)], marker='s', s=100)
-        plt.plot(x_axis, packets_per_tti1[40:int(60)], # '-s',  
+        plt.ylim(0, np.nanmax(np.concatenate([packets_per_tti1, 
+                                              packets_per_tti2,
+                                              packets_per_tti3])) + 5)  
+        
+        # plt.scatter(x_axis, packets_per_tti1[0:int(total_ttis)], marker='s', 
+        #             s=100, label='20% Load') # 0:int(total_ttis/2)
+        plt.plot(x_axis, packets_per_tti1[0:int(total_ttis)], # '-s',  
                   label='20% Load')
-        plt.scatter(x_axis, packets_per_tti2[40:int(60)], marker='v', s=100)
-        plt.plot(x_axis, packets_per_tti2[40:int(60)], # '-*', 
+        
+        # plt.scatter(x_axis, packets_per_tti2[0:int(total_ttis)], marker='v', 
+        #             s=100, label='50% Load')
+        plt.plot(x_axis, packets_per_tti2[0:int(total_ttis)], # '-*', 
                  label='50% Load')
-        plt.scatter(x_axis, packets_per_tti3[40:int(60)], marker='o', s=100)
-        plt.plot(x_axis, packets_per_tti3[40:int(60)], # '-o', 
+        
+        # plt.scatter(x_axis, packets_per_tti3[0:int(total_ttis)], marker='o', 
+        #             s=100, label='90% Load')
+        plt.plot(x_axis, packets_per_tti3[0:int(total_ttis)], # '-o', 
                  label='90% Load')
         plt.legend(prop={'size': 25})
         # plt.show()
+        print(input_folder3.split('VR - ')[1])
         
         if(save):
             save_path = output_folder + "New" + "\\"
-            save_name = f'Packets per TTI - 5 Queues_cut_cut.png'
+            save_name = f'Packets per TTI - Queues_{input_folder3.split("VR - ")[1]}_cut2.png'
             plt.savefig(save_path + save_name, dpi=300, bbox_inches='tight')
             print(f'Figure saved: {save_name}')
-        
-        
+                
         return # raise SystemExit
         
+        """
         # TODO: Make plots with multiple inputs - show multiple queues together
 #############################
 #############################        
@@ -185,7 +201,7 @@ def plot_dispersion(input_folder, input_folder2, input_folder3, input_file,
         # plt.title('Mean - time spend in total by packets of each frame', fontsize=20)
         plt.xlabel('Loads in %', fontsize=14)
         plt.ylabel('time in ms', fontsize=14)
-        plt.ylim(0, np.nanmax(packets_per_tti) + 10)     
+        plt.ylim(0, np.nanmax(packets_per_tti1, packets_per_tti2) + 10)     
         # plt.scatter(x_axis, packets_per_tti)
         plt.plot(x_axis, packets_per_tti, '-o')
         plt.show()
@@ -220,7 +236,7 @@ def plot_dispersion(input_folder, input_folder2, input_folder3, input_file,
             print(f'Figure saved: {save_name}')
                 
         # save = False
-    
+        """
            
     
 
@@ -229,10 +245,14 @@ input_folder = "\\5Q - 20.0% Load - 1Gbps - 1.0s\\"
 input_folder2 = "\\5Q - 50.0% Load - 1Gbps - 1.0s\\"
 input_folder3 = "\\5Q - 90.0% Load - 1Gbps - 1.0s\\"
 
+input_folder1 = "5Q - 20.0% Load - 1Gbps - 1.0s - VR - 10.0us"
+input_folder2 = "5Q - 50.0% Load - 1Gbps - 1.0s - VR - 10.0us"
+input_folder3 = "5Q - 90.0% Load - 1Gbps - 1.0s - VR - 10.0us"
+
 # input_name = "\\10Q - 3.0s - 1Gbps - 20.0% Load\\"
 input_file = "trace_APP50_end.csv"
 
-plot_dispersion(input_folder, input_folder2, input_folder3, input_file, 
-                plot = True, save = True)    
+plot_dispersion(input_folder1, input_folder2, input_folder3, input_file, 
+                plot = True, save = not True)    
 
 
