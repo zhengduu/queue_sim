@@ -1,0 +1,45 @@
+
+Simulation Parameters: 
+ Simulation start: 1.0 s
+ Simulation duration: 0.999 s
+ Number of queues: 5
+ Background traffic type: VR
+ Serving Bitrate: 1000.0Mbps
+ System Load: 20.0%
+
+Initializing Video File: 28.0710 seconds
+Initializing Event Calendar: 0.1741 seconds
+Total start events: 62007
+
+Simulation Duration: 0.00000 s
+Iterations: 0 - Time: 0.0
+Event Calendar: 62006 Entries left
+Event Handling Duration: 0.00018 s
+
+Simulation Duration: 32.27245 s
+Iterations: 100000 - Time: 0.671
+Event Calendar: 20121 Entries left
+
+Finished Simulation: 147838 Events - 46.9968 seconds
+
+Simulation Parameters: 
+ Simulation start: 1.0 s
+ Simulation duration: 0.999 s
+ Number of queues: 5
+ Background traffic type: VR
+ Serving Bitrate: 1000.0Mbps
+ System Load: 20.0%
+
+Mean Packet Sizes:
+ I-frames: 1356.92 Byte
+ P-frames: 1324.98 Byte
+
+Mean inter-packet time:
+ All frames: 0.157036 ms
+ I-frames:   0.157058 ms
+ P-frames:   0.157031 ms
+
+Standard Deviation: 
+ All frames: 0.001921 ms
+ I-frames:   0.001439 ms
+ P-frames:   0.002007 ms
