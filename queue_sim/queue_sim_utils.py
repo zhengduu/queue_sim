@@ -30,12 +30,10 @@ file_to_simulate = file_folder + "VR_traces" + "\\" + "trace_APP50.csv"
 # Load into dataframe
 sim_data = pd.read_csv(file_to_simulate, encoding='utf-16-LE') 
                 
-sim_time = 59.999 
+# sim_time = 59.999 
 
 # Adjust timestamps to avoid sorting problems!  
 # Packet timestamp count starts at zero 
-# sim_data['time'] = sim_data['time'].apply(lambda x: x - sim_data['time'][0])
-
 # Set all packets belonging to same frame to frame generation time 
 fps = 30 # int(np.ceil(sim_data["frame"].iloc[-1] / sim_data["time"].iloc[-1]))
 frame_time = 1 / fps       
@@ -48,24 +46,7 @@ sim_data['time'] = sim_data['frame'] * frame_time
 # Create list for start and final packet index of each frame
 packets_in_frame = list(range(sim_data["frame"].iloc[-1] + 1))
   
-"""
-TODO
-Calculate interpacket_time tau, such that
-- On average, the total time for packets of one frame to be send out
-  is 0.5 x inter-frame time
-- The time for all packets of a frame to be send out should not 
-  exceed the inter-frame time (too often)
 
-How:
-    - Calculate for every individual frame of the video time the tau_i
-      for which packets of said frame would be send out after 0.5x1/fps
-    - Average over all tau_i's of all frames -> that is the final tau  
-    
-    -> Calculate for every frame the number of packets
-    -> Calculate nr_packets/0.5xframetime per frame
-    -> average of all frames
-
-"""
 interpacket_time = 0
 
 # Add inter-packet time of 1 microsecond per packet for each frame  
@@ -82,7 +63,7 @@ for frame in range(sim_data['frame'].iloc[-1] + 1):
 nr_packets_in_frame = list(range(len(packets_in_frame)))
 interpacket_time_frame = list(range(len(packets_in_frame)))
 
-burstiness = 0.6
+burstiness = 1.0
 
 dispersion_per_frame = frame_time * (1 - burstiness)
 
@@ -108,7 +89,13 @@ for frame in range(len(packets_in_frame)):
                         packets_in_frame[frame][1] + 1):
         sim_data['time'][packet] += packet_counter * interpacket_time
         packet_counter += 1
-        
+
+
+file_to_save = f'{file_folder}VR_traces\\trace_APP50_{burstiness}.csv'
+sim_data_save = sim_data
+# save to csv with dispersion as suffix
+sim_data_save.to_csv(file_to_save, encoding='utf-16-LE')
+
 # fps = 30
 # total_frames = data['frame'].iloc[-1] + 1
 # total_time = total_frames / fps # in seconds
