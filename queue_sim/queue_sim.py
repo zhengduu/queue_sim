@@ -138,7 +138,7 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
     nr_packets_per_s = int(bg_throughput / avg_packet_size)
     exp_time = round((1 / nr_packets_per_s), 9)
     
-    print(exp_time, nr_packets_per_s, bg_throughput)
+    # print(exp_time, nr_packets_per_s, bg_throughput)
       
     # Generate all background packet arrivals in each queue   
     bg_sizes = [] 
@@ -531,16 +531,17 @@ def main(input_args, serving_bitrate, sim_par, debug):
                 
         # Load into dataframe                   
         # Use traces with already adjusted burstiness etc. 
-        sim_data = pd.read_csv(file_to_simulate, encoding='utf-16-LE')     
+        sim_data = pd.read_csv(file_to_simulate, encoding='utf-16-LE')    
+        
+        fps = 30 
+        # int(np.ceil(sim_data["frame"].iloc[-1] / sim_data["time"].iloc[-1]))
+        frame_time = 1 / fps
         
         if not already_adjusted: 
             # Adjust timestamps to avoid sorting problems!  
             # Packet timestamp count starts at zero 
             # Set all packets belonging to same frame to frame generation time 
-            fps = 30 
-            # int(np.ceil(sim_data["frame"].iloc[-1] / sim_data["time"].iloc[-1]))
-            frame_time = 1 / fps
-            
+                        
             sim_data['time'] = sim_data['frame'] * frame_time 
             
             # Create list for start and final packet index of each frame
