@@ -77,7 +77,7 @@ class Packet:
         self.packet_type = packet_type 
         
         
-def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load, 
+def initialise_event_calendar(seed, vr_timestamps, vr_sizes, queues, sys_load, 
                               start_time, end_time, bg_traffic_type, debug): 
     """
     
@@ -146,7 +146,7 @@ def initialise_event_calendar(vr_timestamps, vr_sizes, queues, sys_load,
     if bg_traffic_type == "BG":         
         for q in range(queues):
             
-            random_seed = q
+            random_seed = 5 + seed * 10 + q
             
             curr_time = start_time
             bg_count = 0
@@ -473,6 +473,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     vr_timestamps = []
     vr_sizes = []
     
+    seed = input_args.seed
     vr_file_name = input_args.trace # "trace_0.csv"
     n_queues = input_args.queues
     sys_load = input_args.load
@@ -480,7 +481,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     sim_time = input_args.sim_time
     end_time = start_time + sim_time
     bg_traffic_type = input_args.bg
-    q_latency = 10e-6 # 10 us, based on paper 
+    q_latency = 5e-6 # 10 us, based on paper 
     # (Essentially in a sense similar to just adding more load)
     # Alternative: 500 ns (based on newer stat sheet)
     
@@ -495,9 +496,9 @@ def main(input_args, serving_bitrate, sim_par, debug):
     file_to_simulate = file_folder + '\\VR_traces\\' + vr_file_name    
     
     # Create output save folder
-    save_folder_name = f'{n_queues}Q - {sys_load*100}% Load - ' + \
-                       f'{round(start_time, 2)}-{round(end_time, 2)}s - ' + \
-                       f'{bg_traffic_type} - ' + \
+    save_folder_name = f'SEED{seed}_{n_queues}Q_{sys_load*100}% Load_' + \
+                       f'{round(start_time, 2)}-{round(end_time, 2)}s_' + \
+                       f'{bg_traffic_type}_' + \
                        f'{round(q_latency * 1e6, 2)}us'                           
                        # f'{int(serving_bitrate/(1e9))}Gbps - ' + \
     output_save_path = file_folder + "\\Output\\" + save_folder_name    
@@ -545,13 +546,13 @@ def main(input_args, serving_bitrate, sim_par, debug):
             sim_data['time'] = sim_data['frame'] * frame_time 
             
             # Create list for start and final packet index of each frame
-            packets_in_frame = list(range(sim_data["frame"].iloc[-1] + 1))
+            packets_in_frame = list(range(sim_data['frame'].iloc[0], 
+                                          sim_data["frame"].iloc[-1] + 1))
                         
-            interpacket_time = 0
-            
             # Add inter-packet time of 1 microsecond per packet for each frame  
             # Add specific tau based on interframe time and burstiness 
-            for frame in range(sim_data['frame'].iloc[-1] + 1):
+            for frame in range(sim_data['frame'].iloc[0], 
+                               sim_data['frame'].iloc[-1] + 1):
                 # Save indices of current frame in list
                 packets_in_frame[frame] = [] # start with empty list
                 packets_in_frame[frame].append(sim_data.index[sim_data['frame'] == 
@@ -594,7 +595,21 @@ def main(input_args, serving_bitrate, sim_par, debug):
         # Cut from start until desired total simulation time from console input
         sim_data = sim_data[((sim_data['frame']/fps) >= start_time)]            
         sim_data = sim_data[((sim_data['frame']/fps) < end_time)]     
-        
+                
+        # TODO
+        # # Create list for start and final packet index of each frame
+        # packets_in_frame = list(range(sim_data["frame"].iloc[-1] + 1 - 
+        #                               sim_data['frame'].iloc[0]))
+                    
+        # for frame in range(sim_data["frame"].iloc[-1] + 1 - 
+        #                    sim_data['frame'].iloc[0]):
+        #     # Save indices of current frame in list
+        #     packets_in_frame[frame] = [] # start with empty list
+        #     packets_in_frame[frame].append(sim_data.index[sim_data['frame'] == 
+        #                                                frame][0].tolist())
+        #     packets_in_frame[frame].append(sim_data.index[sim_data['frame'] == 
+        #                                                frame][-1].tolist())
+            
         # Copy timestamps 
         vr_timestamps = sim_data['time'].values.copy()
         vr_sizes = sim_data['size'].values.copy() 
@@ -650,7 +665,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
         
     tic = time.perf_counter()    
     event_calendar, event_times_lst, total_vr_packets, bg_packets = \
-        initialise_event_calendar(vr_timestamps, vr_sizes, n_queues, sys_load, 
+        initialise_event_calendar(seed, vr_timestamps, vr_sizes, n_queues, sys_load, 
                                   start_time, end_time, bg_traffic_type, debug)
         
     event_times = np.array(event_times_lst)
@@ -849,7 +864,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     
     print("Saving output files...")
 
-    dispersion = True
+    dispersion = not True
     if dispersion:
         
         queue_par = [n_queues, serving_bitrate, sys_load, start_time, 
