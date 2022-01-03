@@ -7,11 +7,11 @@
     * matplotlib
     * pandas
 
-# Use following command to run simulation:
+# Use following (example) command to run simulation:
 In repo folder: 
 
 ```bash 
-python -m queue_sim -trace trace_APP50.csv -bg VR -queues 5 -load 0.9 -start_time 1.0 -sim_time 0.999
+python -m queue_sim -seed 1 -trace trace_APP50_0.6.csv -bg BG -queues 5 -load 0.9 -start_time 0.0 -sim_time 0.999
 ```
 # Notes:
 - All VR traces need to be in "VR_traces" folder
