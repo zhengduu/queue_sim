@@ -20,9 +20,9 @@ input_folder1 = "5Q - 75.0% Load - 1Gbps - 1.0s - BG - 10.0us"
 input_folder2 = "5Q - 80.0% Load - 1Gbps - 1.0s - BG - 10.0us"
 input_folder3 = "5Q - 75.0% Load - 1Gbps - 1.0s - BG - 10.0us"
 
-input_folder1 = "SEED1_5Q_70.0% Load_0.0-1.0s_BG_10.0us"
-input_folder2 = "SEED1_5Q_70.0% Load_0.0-1.0s_BG_7.5us"
-input_folder3 = "SEED1_5Q_90.0% Load_0.0-1.0s_BG_5.0us"
+input_folder1 = "SEED1_5Q_85.0% Load_0.0-1.0s_BG_6.0us"
+input_folder2 = "SEED1_5Q_80.0% Load_0.0-1.0s_BG_6.0us"
+input_folder3 = "SEED1_5Q_75.0% Load_0.0-1.0s_BG_6.0us"
 
 # input_name = "\\10Q - 3.0s - 1Gbps - 20.0% Load\\"
 input_file = "trace_APP50_0.6_end.csv"
@@ -68,7 +68,7 @@ tti_duration = 0.00025
 fps = 30
 key_int = 10
 GoP_duration = key_int * (1/30)
-total_duration = np.ceil(plot_data3[-1])
+total_duration = np.ceil(plot_data2[-1])
 total_ttis = int((total_duration / tti_duration) / 1)
 GoP_ttis = int(GoP_duration / tti_duration)
 start_tti = int(np.floor(plot_data3[0] / tti_duration))
@@ -189,20 +189,20 @@ if plot:
 
     # plt.scatter(x_axis, packets_per_tti1[start_tti:int(total_ttis)], marker='s',
     #             s=100, label='20% Load') # 0:int(total_ttis/2)
-    plt.plot(x_axis, packets_per_tti1[start_tti:int(total_ttis)], alpha=0.7, # '-s',
-              # label='20% Load')
-              label='70% Load - 10 us')
+    # plt.plot(x_axis, packets_per_tti1[start_tti:int(total_ttis)], alpha=0.7, # '-s',
+    #           # label='20% Load')              
+    #           label='85% Load - 6 us')
 
     # # plt.scatter(x_axis, packets_per_tti2[start_tti:int(total_ttis)], marker='v',
     # #             s=100, label='50% Load')
     plt.plot(x_axis, packets_per_tti2[start_tti:int(total_ttis)], alpha=0.7, # '-*',
               # label='50% Load')
-              label='70% Load - 7.5 us')
+              label='80% Load - 6 us')
 
     # plt.scatter(x_axis, packets_per_tti3[start_tti:int(total_ttis)], marker='o',
     #             s=100, label='90% Load')
     plt.plot(x_axis, packets_per_tti3[start_tti:int(total_ttis)], alpha=0.7, # '-o',
-              label='90% Load - 5 us')
+              label='75% Load - 6 us')
               # label='15') 
     plt.legend(prop={'size': 25})
     # plt.show()
