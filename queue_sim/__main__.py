@@ -15,7 +15,8 @@ from queue_sim.queue_sim import main, Sim_Par
 def _parse_args() -> Namespace:
     parser = ArgumentParser(prog="python3 -m queue_sim",
                             description="Reads and simulates VR packets going through network hops.")
-
+    
+    parser.add_argument('-seed', action='store', type=int, required=True, help="Random Seed (For different users)")
     parser.add_argument('-trace', action='store', type=str, required=True, help="Input PCAP traces")
     parser.add_argument('-bg', action='store', type=str, required=True, help="Type of background traffic")
     parser.add_argument('-queues', action='store', type=int, required=True, help="Number of queues")
