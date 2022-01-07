@@ -481,7 +481,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     sim_time = input_args.sim_time
     end_time = start_time + sim_time
     bg_traffic_type = input_args.bg
-    q_latency = 5e-6 # 10 us, based on paper 
+    q_latency = 6e-6 # 10 us, based on paper 
     # (Essentially in a sense similar to just adding more load)
     # Alternative: 500 ns (based on newer stat sheet)
     
@@ -496,16 +496,17 @@ def main(input_args, serving_bitrate, sim_par, debug):
     file_to_simulate = file_folder + '\\VR_traces\\' + vr_file_name    
     
     # Create output save folder
-    save_folder_name = f'SEED{seed}_{n_queues}Q_{sys_load*100}% Load_' + \
-                       f'{round(start_time, 2)}-{round(end_time, 2)}s_' + \
-                       f'{bg_traffic_type}_' + \
-                       f'{round(q_latency * 1e6, 2)}us'                           
+    save_folder_name = f'SEED{seed} - {n_queues}Q - {sys_load*100}% Load - ' + \
+                       f'{bg_traffic_type} - {round(q_latency * 1e6, 2)}us' 
+                       # f'{round(start_time, 2)}-{round(end_time, 2)}s_' + \                          
                        # f'{int(serving_bitrate/(1e9))}Gbps - ' + \
     output_save_path = file_folder + "\\Output\\" + save_folder_name    
     os.makedirs(output_save_path, exist_ok=True)
     
     # Txt file with print logs
-    log_name = save_folder_name + f' - {vr_file_name.strip(".csv")} - log.txt' 
+    log_name = f'{vr_file_name.strip(".csv")} - ' + \
+               f'{round(start_time, 2)}-{round(end_time, 2)}s - log.txt' 
+               # save_folder_name + 
     txt_log_file = output_save_path + "\\" + log_name
         
     print("\nSimulation Parameters:",
@@ -657,6 +658,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     
 
     toc = time.perf_counter()
+    print("\nCreated Output Folder")
     print(f"\nInitializing Video File: {toc-tic:0.4f} seconds")
     with open(txt_log_file, "a") as log_file:            
         print(f"\nInitializing Video File: {toc-tic:0.4f} seconds", 
@@ -673,7 +675,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     toc = time.perf_counter()        
     
     print(f"Initializing Event Calendar: {toc-tic:0.4f} seconds")
-    print(f"Total start events: {len(event_calendar)}")        
+    print(f"Total start events: {len(event_calendar)}")     
     print("Starting Event Simulation...")
     
     with open(txt_log_file, "a") as log_file:            
@@ -850,7 +852,8 @@ def main(input_args, serving_bitrate, sim_par, debug):
 
     # print("Final VR packets:", vr_packet_counter)
        
-    output_file_name = f'{vr_file_name.strip(".csv")}_end.csv'
+    output_file_name = f'{vr_file_name.strip(".csv")} - ' + \
+                       f'{round(start_time, 2)}-{round(end_time, 2)}s - end.csv'
     # output_file_name_arr = f'{vr_file_name.strip(".csv")}_arr.csv'
     # output_file_name_dep = f'{vr_file_name.strip(".csv")}_dep.csv'
 
