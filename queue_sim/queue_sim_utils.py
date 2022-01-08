@@ -7,6 +7,7 @@ Created on Tue Dec 14 20:51:04 2021
 
 import numpy as np
 import os
+import glob
 import pandas as pd
 import matplotlib.pyplot as plt
 import time
@@ -16,21 +17,49 @@ tic = time.perf_counter()
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
-input_file = "trace_APP50_end.csv"
+file_folder = os.getcwd().strip("queue_sim")
 
-file_folder = os.getcwd().strip("queue_sim")  
-# file_to_plot = file_folder + "Output\\old\\5Q - 20.0% Load - 1Gbps - 1.0s" + \
-#                "\\"  + input_file 
+file_name = "trace_APP50_0.6.csv"
+trace_folder = file_folder + "VR_traces\\"
+input_trace = trace_folder + file_name
+sim_trace = pd.read_csv(input_trace, encoding='utf-16-LE') 
+sim_trace.rename(columns = {'Unnamed: 0': 'index'}, inplace = True)
 
-# data = pd.read_csv(file_to_plot, encoding='utf-8')
+output_file_folder = file_folder + "Output\\local\\" 
+parameters = "SEED1 - 5Q - 20.0% Load - BG - 6.0us" # TODO 
+csv_folder = output_file_folder + parameters + "\\" + file_name.strip(".csv")
 
 
-file_to_simulate = file_folder + "VR_traces" + "\\" + "trace_APP50.csv"
+all_files = glob.glob(os.path.join(csv_folder, "*.csv"))
+
+timestamps = pd.concat((pd.read_csv(f, index_col=False, header=None)
+                            for f in all_files)).to_numpy().flatten()
+timestamps.sort()
+
+new_timestamps = pd.DataFrame(data=timestamps, columns=["timestamps"])
+# new_timestamps.sort_values(by='timestamps', ignore_index=True)
+new_timestamps.index = [x for x in range(0, len(new_timestamps.values))]
+new_timestamps.reset_index(drop=True)
+
+nr_packets = len(new_timestamps)
+sim_trace = sim_trace[(sim_trace['index'] < nr_packets)]
+sim_trace['time'] = new_timestamps
+
+
+output_save_path = f'{file_folder}VR_traces\\{file_name.strip(".csv")}\\{parameters}'      
+os.makedirs(output_save_path, exist_ok=True)
+
+file_to_save = f'{output_save_path}\\{file_name.strip(".csv")}_full.csv'
+sim_trace.to_csv(file_to_save, encoding='utf-16-LE')
 
 # Load into dataframe
-sim_data = pd.read_csv(file_to_simulate, encoding='utf-16-LE') 
-                
 # sim_time = 59.999 
+
+
+
+"""
+From Burstiness function
+
 
 # Adjust timestamps to avoid sorting problems!  
 # Packet timestamp count starts at zero 
@@ -40,15 +69,11 @@ frame_time = 1 / fps
 
 # # Cut dataframe until total simulation time by frame number
 # sim_data = sim_data[((sim_data['frame']/fps) <= sim_time)] 
-
 sim_data['time'] = sim_data['frame'] * frame_time 
 
 # Create list for start and final packet index of each frame
 packets_in_frame = list(range(sim_data["frame"].iloc[-1] + 1))
-  
-
 interpacket_time = 0
-
 # Add inter-packet time of 1 microsecond per packet for each frame  
 # Add specific tau based on interframe time and burstiness 
 for frame in range(sim_data['frame'].iloc[-1] + 1):
@@ -96,22 +121,16 @@ sim_data_save = sim_data
 # save to csv with dispersion as suffix
 sim_data_save.to_csv(file_to_save, encoding='utf-16-LE')
 
-# fps = 30
-# total_frames = data['frame'].iloc[-1] + 1
-# total_time = total_frames / fps # in seconds
-# print(total_time)
-# sizes = data['size'].to_numpy()
-
-# bps = sum(sizes) * 8 / total_time # bits / seconds
 
 # print(bps/1e6)
 toc = time.perf_counter()
 
 print(f"{toc-tic:0.4f}")
+"""
+
+# %% For plots?
+"""
 plot_data = sim_data['time'].to_numpy()
-
-
-# %%
 tti_duration = 0.00025
 fps = 30
 key_int = 10
@@ -157,6 +176,6 @@ plt.ylim(0, np.nanmax(packets_per_tti1) + 3)
 #             s=100, label='20% Load') # 0:int(total_ttis/2)
 plt.bar(x_axis, packets_per_tti1[0:int(total_ttis)], # '-s',  
           label='20% Load')
-
+"""
 
 
