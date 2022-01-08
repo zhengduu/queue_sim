@@ -1,0 +1,16 @@
+
+Simulation Parameters: 
+ Simulation start: 8.0 s
+ Simulation end: 9.0 s
+ Number of queues: 10
+ Background traffic type: BG
+ Serving Bitrate: 1000.0Mbps
+ System Load: 50.0%
+
+Initializing Video File: 0.1926 seconds
+Initializing Event Calendar: 23.9022 seconds
+Total start events: 915350
+
+Simulation Duration: 0.01563 s
+Iterations: 0 - Time: 0.0
+Event Calendar: 915349 Entries left
