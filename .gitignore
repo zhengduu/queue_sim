@@ -1,6 +1,7 @@
 /Other(ignore)/
 /Plots/
 /Output/*
+/VR_traces/*/
 !/Output/new/
 /__pycache__/
 /queue_sim/__pycache__/
