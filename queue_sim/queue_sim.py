@@ -500,7 +500,8 @@ def main(input_args, serving_bitrate, sim_par, debug):
                        f'{bg_traffic_type} - {round(q_latency * 1e6, 2)}us' 
                        # f'{round(start_time, 2)}-{round(end_time, 2)}s_' + \                          
                        # f'{int(serving_bitrate/(1e9))}Gbps - ' + \
-    output_save_path = file_folder + "\\Output\\" + save_folder_name    
+    output_save_path = file_folder + "\\Output\\" + save_folder_name + "\\" + \
+                       vr_file_name.strip(".csv")   
     os.makedirs(output_save_path, exist_ok=True)
     
     # Txt file with print logs
