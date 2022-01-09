@@ -512,7 +512,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     log_name = f'{vr_file_name.strip(".csv")} - ' + \
                f'{round(start_time, 2)}-{round(end_time, 2)}s - log.txt' 
                # save_folder_name + 
-    txt_log_file = output_save_path + "\\logs\\" + log_name
+    txt_log_file = output_log_save_path + log_name
         
     print("\nSimulation Parameters:",
           f"\n Simulation start: {start_time} s" +
