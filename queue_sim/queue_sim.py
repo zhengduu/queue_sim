@@ -857,8 +857,9 @@ def main(input_args, serving_bitrate, sim_par, debug):
                        f'{round(start_time, 2)}-{round(end_time, 2)}s - end.csv'
     # output_file_name_arr = f'{vr_file_name.strip(".csv")}_arr.csv'
     # output_file_name_dep = f'{vr_file_name.strip(".csv")}_dep.csv'
-
-    full_file_name = os.path.join(output_save_path, output_file_name)
+    output_csv_save_path = output_save_path + f'\\{vr_file_name.strip(".csv")}'
+    
+    full_file_name = os.path.join(output_csv_save_path, output_file_name)
     # full_file_name_arr = os.path.join(output_save_path, output_file_name_arr)
     # full_file_name_dep = os.path.join(output_save_path, output_file_name_dep)
     
