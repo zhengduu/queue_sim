@@ -500,15 +500,19 @@ def main(input_args, serving_bitrate, sim_par, debug):
                        f'{bg_traffic_type} - {round(q_latency * 1e6, 2)}us' 
                        # f'{round(start_time, 2)}-{round(end_time, 2)}s_' + \                          
                        # f'{int(serving_bitrate/(1e9))}Gbps - ' + \
-    output_save_path = file_folder + "\\Output\\" + save_folder_name + "\\" + \
-                       vr_file_name.strip(".csv")   
-    os.makedirs(output_save_path, exist_ok=True)
-    
+    output_save_path = file_folder + "\\Output\\" + save_folder_name + \
+                       f'\\{vr_file_name.strip(".csv")}'
+    output_log_save_path = output_save_path + "\\logs\\"  
+    output_csv_save_path = output_save_path + "\\csv\\"  
+
+    os.makedirs(output_log_save_path, exist_ok=True)
+    os.makedirs(output_csv_save_path, exist_ok=True)
+
     # Txt file with print logs
     log_name = f'{vr_file_name.strip(".csv")} - ' + \
                f'{round(start_time, 2)}-{round(end_time, 2)}s - log.txt' 
                # save_folder_name + 
-    txt_log_file = output_save_path + "\\" + log_name
+    txt_log_file = output_save_path + "\\logs\\" + log_name
         
     print("\nSimulation Parameters:",
           f"\n Simulation start: {start_time} s" +
@@ -857,7 +861,6 @@ def main(input_args, serving_bitrate, sim_par, debug):
                        f'{round(start_time, 2)}-{round(end_time, 2)}s - end.csv'
     # output_file_name_arr = f'{vr_file_name.strip(".csv")}_arr.csv'
     # output_file_name_dep = f'{vr_file_name.strip(".csv")}_dep.csv'
-    output_csv_save_path = output_save_path + f'\\{vr_file_name.strip(".csv")}'
     
     full_file_name = os.path.join(output_csv_save_path, output_file_name)
     # full_file_name_arr = os.path.join(output_save_path, output_file_name_arr)
@@ -868,6 +871,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     # np.savetxt(full_file_name_dep, vr_timestamps_dep, delimiter=",")#     
     
     print("Saving output files...")
+    print(f"{output_save_path}\n")
 
     dispersion = not True
     if dispersion:
