@@ -45,11 +45,14 @@ nr_packets = len(new_timestamps)
 sim_trace = sim_trace[(sim_trace['index'] < nr_packets)]
 sim_trace['time'] = new_timestamps
 
+start = np.floor(sim_trace["time"][0])
+end = np.ceil(sim_trace["time"].iloc[-1])
+
 
 output_save_path = f'{file_folder}VR_traces\\{file_name.strip(".csv")}\\{parameters}'      
 os.makedirs(output_save_path, exist_ok=True)
 
-file_to_save = f'{output_save_path}\\{file_name.strip(".csv")}_full.csv'
+file_to_save = f'{output_save_path}\\{file_name.strip(".csv")}_{start}-{end}s.csv'
 sim_trace.to_csv(file_to_save, encoding='utf-16-LE')
 
 # Load into dataframe
