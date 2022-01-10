@@ -1,0 +1,98 @@
+
+Simulation Parameters: 
+ Simulation start: 12.0 s
+ Simulation end: 16.0 s
+ Number of queues: 15
+ Background traffic type: VR
+ Serving Bitrate: 1000.0Mbps
+ System Load: 20.0%
+
+Initializing Video File: 0.3277 seconds
+Initializing Event Calendar: 3.9469 seconds
+Total start events: 678916
+
+Simulation Duration: 0.00000 s
+Iterations: 0 - Time: 0.0
+Event Calendar: 678915 Entries left
+Event Handling Duration: 0.00947 s
+
+Simulation Duration: 1647.70397 s
+Iterations: 100000 - Time: 12.244
+Event Calendar: 638325 Entries left
+Event Handling Duration: 0.00865 s
+
+Simulation Duration: 3115.92528 s
+Iterations: 200000 - Time: 12.478
+Event Calendar: 597661 Entries left
+Event Handling Duration: 0.00767 s
+
+Simulation Duration: 4456.90827 s
+Iterations: 300000 - Time: 12.71
+Event Calendar: 557174 Entries left
+Event Handling Duration: 0.00746 s
+
+Simulation Duration: 5695.17110 s
+Iterations: 400000 - Time: 12.957
+Event Calendar: 516427 Entries left
+Event Handling Duration: 0.01207 s
+
+Simulation Duration: 6838.77773 s
+Iterations: 500000 - Time: 13.171
+Event Calendar: 475688 Entries left
+Event Handling Duration: 0.01110 s
+
+Simulation Duration: 7872.19496 s
+Iterations: 600000 - Time: 13.388
+Event Calendar: 435146 Entries left
+Event Handling Duration: 0.00851 s
+
+Simulation Duration: 8755.99403 s
+Iterations: 700000 - Time: 13.629
+Event Calendar: 394417 Entries left
+Event Handling Duration: 0.00395 s
+
+Simulation Duration: 9429.19669 s
+Iterations: 800000 - Time: 13.852
+Event Calendar: 353738 Entries left
+Event Handling Duration: 0.00653 s
+
+Simulation Duration: 10025.29300 s
+Iterations: 900000 - Time: 14.075
+Event Calendar: 312976 Entries left
+Event Handling Duration: 0.00543 s
+
+Simulation Duration: 10556.86390 s
+Iterations: 1000000 - Time: 14.339
+Event Calendar: 272313 Entries left
+Event Handling Duration: 0.00280 s
+
+Simulation Duration: 11025.14274 s
+Iterations: 1100000 - Time: 14.566
+Event Calendar: 231702 Entries left
+Event Handling Duration: 0.00401 s
+
+Simulation Duration: 11432.56774 s
+Iterations: 1200000 - Time: 14.8
+Event Calendar: 191023 Entries left
+Event Handling Duration: 0.00190 s
+
+Simulation Duration: 11793.37603 s
+Iterations: 1300000 - Time: 15.045
+Event Calendar: 150514 Entries left
+Event Handling Duration: 0.00080 s
+
+Simulation Duration: 12013.53661 s
+Iterations: 1400000 - Time: 15.322
+Event Calendar: 109752 Entries left
+Event Handling Duration: 0.00065 s
+
+Simulation Duration: 12123.58564 s
+Iterations: 1500000 - Time: 15.56
+Event Calendar: 69076 Entries left
+Event Handling Duration: 0.00055 s
+
+Simulation Duration: 12225.03958 s
+Iterations: 1600000 - Time: 15.8
+Event Calendar: 28352 Entries left
+
+Finished Simulation: 1669864 Events - 12292.3365 seconds
