@@ -77,8 +77,9 @@ class Packet:
         self.packet_type = packet_type 
         
         
-def initialise_event_calendar(seed, vr_timestamps, vr_sizes, queues, sys_load, 
-                              start_time, end_time, bg_traffic_type, debug): 
+def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes, 
+                              queues, sys_load, start_time, end_time, 
+                              bg_traffic_type, debug): 
     """
     
 
@@ -224,9 +225,10 @@ def initialise_event_calendar(seed, vr_timestamps, vr_sizes, queues, sys_load,
         # Get random intervals, summing up to interframe time
         # Add interval as delta to all packets of one VR timestamp set
         # Append all in event calendar
-        
+        vr_bitrate = int(vr_file_name.split("_")[1].strip("APP"))
+        vr_load = vr_bitrate / 1000
         # total_time = sim_time
-        nr_vr_streams = int(sys_load/0.05) # 50Mbps BG streams
+        nr_vr_streams = int(sys_load / vr_load) # 50Mbps BG streams
         frametime = 1 / 30
         np.random.seed(0)
         stream_delays = np.random.uniform(0, frametime, nr_vr_streams*queues)
@@ -672,8 +674,9 @@ def main(input_args, serving_bitrate, sim_par, debug):
         
     tic = time.perf_counter()    
     event_calendar, event_times_lst, total_vr_packets, bg_packets = \
-        initialise_event_calendar(seed, vr_timestamps, vr_sizes, n_queues, sys_load, 
-                                  start_time, end_time, bg_traffic_type, debug)
+        initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes, 
+                                  n_queues, sys_load, start_time, end_time, 
+                                  bg_traffic_type, debug)
         
     event_times = np.array(event_times_lst)
     
