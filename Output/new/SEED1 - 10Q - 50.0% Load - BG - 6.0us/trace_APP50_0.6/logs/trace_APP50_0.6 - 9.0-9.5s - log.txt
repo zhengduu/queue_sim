@@ -14,3 +14,50 @@ Total start events: 456735
 Simulation Duration: 0.00000 s
 Iterations: 0 - Time: 0.0
 Event Calendar: 456734 Entries left
+Event Handling Duration: 0.00374 s
+
+Simulation Duration: 721.78854 s
+Iterations: 100000 - Time: 9.052
+Event Calendar: 409177 Entries left
+Event Handling Duration: 0.00683 s
+
+Simulation Duration: 1295.95953 s
+Iterations: 200000 - Time: 9.106
+Event Calendar: 360134 Entries left
+Event Handling Duration: 0.00292 s
+
+Simulation Duration: 1823.66977 s
+Iterations: 300000 - Time: 9.159
+Event Calendar: 311338 Entries left
+Event Handling Duration: 0.00272 s
+
+Simulation Duration: 2274.33659 s
+Iterations: 400000 - Time: 9.212
+Event Calendar: 262755 Entries left
+Event Handling Duration: 0.00378 s
+
+Simulation Duration: 2651.41314 s
+Iterations: 500000 - Time: 9.267
+Event Calendar: 213489 Entries left
+Event Handling Duration: 0.00291 s
+
+Simulation Duration: 2975.94995 s
+Iterations: 600000 - Time: 9.319
+Event Calendar: 165038 Entries left
+Event Handling Duration: 0.00061 s
+
+Simulation Duration: 3205.39275 s
+Iterations: 700000 - Time: 9.372
+Event Calendar: 116915 Entries left
+Event Handling Duration: 0.00059 s
+
+Simulation Duration: 3322.98986 s
+Iterations: 800000 - Time: 9.425
+Event Calendar: 68016 Entries left
+Event Handling Duration: 0.00054 s
+
+Simulation Duration: 3433.75773 s
+Iterations: 900000 - Time: 9.479
+Event Calendar: 19362 Entries left
+
+Finished Simulation: 938814 Events - 3474.4589 seconds
