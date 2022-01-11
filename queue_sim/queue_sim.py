@@ -134,7 +134,11 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
         
     # Calculate exponential inter-packet arrival time through packet 
     # distribution and desired system load 
-    bg_throughput = sys_load * 0.98 * 1e9 # In Gbps
+    vr_bitrate = int(vr_file_name.split("_")[1].strip("APP"))
+    vr_load = vr_bitrate / 1000    
+    
+    bg_throughput = (sys_load - vr_load) * 0.99 * 1e9 # In Gbps
+    
     avg_packet_size = round(np.sum(packet_sizes * packet_prob)) * 8 # in bit
     nr_packets_per_s = int(bg_throughput / avg_packet_size)
     exp_time = round((1 / nr_packets_per_s), 9)
@@ -225,8 +229,7 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
         # Get random intervals, summing up to interframe time
         # Add interval as delta to all packets of one VR timestamp set
         # Append all in event calendar
-        vr_bitrate = int(vr_file_name.split("_")[1].strip("APP"))
-        vr_load = vr_bitrate / 1000
+        
         # total_time = sim_time
         nr_vr_streams = int(sys_load / vr_load) # 50Mbps BG streams
         frametime = 1 / 30
