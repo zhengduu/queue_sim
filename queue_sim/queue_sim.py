@@ -32,6 +32,17 @@ TODOs:
 """
 pd.options.mode.chained_assignment = None  # default='warn'
 
+class Input: 
+    def __init__(self, seed, trace, bg, queues, load, start_time, sim_time):
+        self.seed = int(seed)
+        self.trace = str(trace)
+        self.bg = str(bg)
+        self.queues = int(queues)
+        self.load = load
+        self.start_time = start_time
+        self.sim_time = sim_time
+        
+        
 class Sim_Par:
     def __init__(self, use_pcap, fps=0, GoP=0, bitrate=0, IP_ratio=0, 
                  packet_size=0):
@@ -129,7 +140,7 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
     all_bg_sizes = []
     
     # Trimodal packet size distribution
-    packet_sizes = np.array([44, 576, 1500]) # In Byte
+    packet_sizes = np.array([44, 576, 1500]) * 8 # In bit 
     packet_prob = np.array([0.44, 0.19, 0.37]) 
         
     # Calculate exponential inter-packet arrival time through packet 
@@ -137,21 +148,55 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
     vr_bitrate = int(vr_file_name.split("_")[1].strip("APP"))
     vr_load = vr_bitrate / 1000    
     
-    bg_throughput = (sys_load - vr_load) * 0.99 * 1e9 # In Gbps
+    bg_throughput = sys_load* 1e9 # In Gbps  - vr_load * 0.99 
     
-    avg_packet_size = round(np.sum(packet_sizes * packet_prob)) * 8 # in bit
+    service_times = packet_sizes / 1e9 
+    mean_service_time_dist = service_times * packet_prob
+    
+    avg_packet_size = round(np.sum(packet_sizes * packet_prob)) # in bit
     nr_packets_per_s = int(bg_throughput / avg_packet_size)
     exp_time = round((1 / nr_packets_per_s), 9)
+        
+    one_over_mu = sum(mean_service_time_dist)
+    S = sum(((service_times - sum(mean_service_time_dist)) ** 2) * packet_prob)
+    lmbda = nr_packets_per_s
+    rho = lmbda * one_over_mu
+    nominator = (rho ** 2) + ((lmbda ** 2) * np.var(S))
+    denominator = 2 * (1 - rho)
+    average_queue_length = int(np.ceil(rho + (nominator / denominator)))
+        
+    print(packet_sizes, "\n", 
+          avg_packet_size, "\n", 
+          nr_packets_per_s, "\n", 
+          average_queue_length, "\n", 
+          one_over_mu, "\n", 
+          S, "\n", 
+          lmbda, "\n", 
+          rho, "\n")    
     
-    # print(exp_time, nr_packets_per_s, bg_throughput)
-      
+    print(vr_sizes[0:10])
+    # raise SystemExit()
+    
+    # Generate mean queue lenght as packets at start of each queue
+    # start_time
+    # if not True: 
+    if bg_traffic_type == "BG":         
+        for q in range(queues):
+            for packet in range(average_queue_length): 
+                new_size = 1500 * 8
+                bg_packet = Packet(packet_id=-1, packet_size=new_size, 
+                                   queue=q, packet_type='BG')
+                event_calendar.append(Event(start_time, 'packet_arrival', 
+                                            q, bg_packet))
+                event_times_lst.append(start_time) 
+                if packet == 0: print(bg_packet.__dict__)
     # Generate all background packet arrivals in each queue   
     bg_sizes = [] 
     total_bg_sizes = 0
     if bg_traffic_type == "BG":         
         for q in range(queues):
             
-            random_seed = 5 + seed * 10 + q
+            random_seed = 5 + (seed + q) * 10 + int(start_time)
             
             curr_time = start_time
             bg_count = 0
@@ -196,7 +241,7 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
                 # Avoid values smaller than 1 microsecond (or nanosecond?)
                 if inter_arr_time <= 0:
                     inter_arr_time = 1e-6
-                    
+                    print("exp_time < 0")    
                 curr_time += inter_arr_time 
                 
                 # Create new BG packet and add to event calendar 
@@ -486,7 +531,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     sim_time = input_args.sim_time
     end_time = start_time + sim_time
     bg_traffic_type = input_args.bg
-    q_latency = 6e-6 # 10 us, based on paper 
+    q_latency = 600e-9 # 10 us, based on paper 
     # (Essentially in a sense similar to just adding more load)
     # Alternative: 500 ns (based on newer stat sheet)
     
@@ -623,6 +668,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
             
         # Copy timestamps 
         vr_timestamps = sim_data['time'].values.copy()
+        sim_data["size"] *= 8
         vr_sizes = sim_data['size'].values.copy() 
         # For calculations later
         vr_frames = sim_data['frame'].values.copy()
@@ -668,7 +714,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     
 
     toc = time.perf_counter()
-    print("\nCreated Output Folder")
+    print("\nCreated Output Folder:\n", output_save_path)
     print(f"\nInitializing Video File: {toc-tic:0.4f} seconds")
     with open(txt_log_file, "a") as log_file:            
         print(f"\nInitializing Video File: {toc-tic:0.4f} seconds", 
@@ -693,7 +739,9 @@ def main(input_args, serving_bitrate, sim_par, debug):
         print(f"Initializing Event Calendar: {toc-tic:0.4f} seconds", file=log_file)
         print(f"Total start events: {len(event_calendar)}", file=log_file)        
         log_file.close()
-
+        
+    # raise SystemExit()
+                
 ########## Start of event simulation ##########
 
     tic = time.perf_counter()    
@@ -901,10 +949,12 @@ def main(input_args, serving_bitrate, sim_par, debug):
 
 if __name__ == "__main__":
     
-    input_args = 0    
-    input_file = "trace_0.csv"    
+    input_args = Input(seed=1, trace='trace_APP30_0.6.csv', bg='BG', 
+                       queues=5, load=0.81, start_time=0.0, sim_time=1.0)    
+    # input_file = "trace_0.csv"    
     sim_par = Sim_Par(use_pcap = True, fps = 30, GoP = 6, bitrate = 10000000, 
                       IP_ratio = 0.2, packet_size = 1500)  
+    
     
     main(input_args, serving_bitrate=1e9, sim_par=sim_par, debug=[False, 5, False])
    
