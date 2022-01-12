@@ -196,7 +196,7 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
     if bg_traffic_type == "BG":         
         for q in range(queues):
             
-            random_seed = 5 + (seed + q) * 10 + int(start_time)
+            random_seed = 5 + (seed + q) * 10 + int(start_time * 1000)
             
             curr_time = start_time
             bg_count = 0
