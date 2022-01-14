@@ -195,7 +195,7 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
                 event_calendar.append(Event(start_time, 'packet_arrival', 
                                             q, bg_packet))
                 event_times_lst.append(start_time) 
-                if packet == 0: print(bg_packet.__dict__)
+                # if packet == 0: print(bg_packet.__dict__)
     # Generate all background packet arrivals in each queue   
     bg_sizes = [] 
     total_bg_sizes = 0
