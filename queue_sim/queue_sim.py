@@ -145,10 +145,16 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
         
     # Calculate exponential inter-packet arrival time through packet 
     # distribution and desired system load 
-    vr_bitrate = int(vr_file_name.split("_")[1].strip("APP"))
-    vr_load = vr_bitrate / 1000    
+    vr_bitrate = sum(vr_sizes) / (end_time - start_time)
+                     # int(vr_file_name.split("_")[1].strip("APP"))
     
-    bg_throughput = sys_load* 1e9 # In Gbps  - vr_load * 0.99 
+    
+    vr_load = vr_bitrate / 1e9    
+    
+    bg_throughput = sys_load * 1e9 # In Gbps  - vr_load * 0.99 
+    
+    total_throughput = (sys_load + vr_load) * 1e9
+    total_load = sys_load + vr_load
     
     service_times = packet_sizes / 1e9 
     mean_service_time_dist = service_times * packet_prob
@@ -158,23 +164,23 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
     exp_time = round((1 / nr_packets_per_s), 9)
         
     one_over_mu = sum(mean_service_time_dist)
-    S = sum(((service_times - sum(mean_service_time_dist)) ** 2) * packet_prob)
-    lmbda = nr_packets_per_s
-    rho = lmbda * one_over_mu
+    S = sum(((service_times - one_over_mu) ** 2) * packet_prob)
+    lmbda = int(total_throughput / avg_packet_size)
+    rho = total_load # lmbda * one_over_mu
     nominator = (rho ** 2) + ((lmbda ** 2) * np.var(S))
     denominator = 2 * (1 - rho)
     average_queue_length = int(np.ceil(rho + (nominator / denominator)))
         
-    print(packet_sizes, "\n", 
-          avg_packet_size, "\n", 
-          nr_packets_per_s, "\n", 
-          average_queue_length, "\n", 
-          one_over_mu, "\n", 
-          S, "\n", 
-          lmbda, "\n", 
-          rho, "\n")    
+    # print(packet_sizes, "\n", 
+    #       avg_packet_size, "\n", 
+    #       nr_packets_per_s, "\n", 
+    #       average_queue_length, "\n", 
+    #       one_over_mu, "\n", 
+    #       S, "\n", 
+    #       lmbda, "\n", 
+    #       rho, "\n")    
     
-    print(vr_sizes[0:10])
+    # print(vr_sizes[0:10])
     # raise SystemExit()
     
     # Generate mean queue lenght as packets at start of each queue
