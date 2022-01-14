@@ -267,7 +267,7 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
                         # = np.append(event_times, curr_time)
                         
                 bg_count += 1
-                total_bg_sizes += new_size
+                # total_bg_sizes += new_size
             all_bg_sizes.append(total_bg_sizes)
             
             # if debug[0]:
@@ -311,7 +311,7 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
                         event_times_lst.append(curr_time)
                         
                     bg_counter += 1    
-                    total_bg_sizes += new_size
+                    # total_bg_sizes += new_size
                 all_bg_sizes.append(total_bg_sizes)
         
     else: 
