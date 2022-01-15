@@ -537,7 +537,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     sim_time = input_args.sim_time
     end_time = start_time + sim_time
     bg_traffic_type = input_args.bg
-    q_latency = 600e-9 # 10 us, based on paper 
+    q_latency = 0 # 600e-9 # 10 us, based on paper 
     # (Essentially in a sense similar to just adding more load)
     # Alternative: 500 ns (based on newer stat sheet)
     
