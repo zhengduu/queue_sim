@@ -284,7 +284,10 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
         # total_time = sim_time
         nr_vr_streams = int(sys_load / vr_load) # 50Mbps BG streams
         frametime = 1 / 30
-        np.random.seed(0)
+        
+        random_seed = 5 + (seed + q) * 10 + int(start_time * 1000)
+        np.random.seed(random_seed+5)
+        
         stream_delays = np.random.uniform(0, frametime, nr_vr_streams*queues)
         stream_counter = 0
         
