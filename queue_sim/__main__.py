@@ -18,7 +18,7 @@ def _parse_args() -> Namespace:
     
     parser.add_argument('-seed', action='store', type=int, required=True, help="Random Seed (For different users)")
     parser.add_argument('-trace', action='store', type=str, required=True, help="Input PCAP traces")
-    # parser.add_argument('-bg', action='store', type=str, required=True, help="Type of background traffic")
+    parser.add_argument('-bg', action='store', type=str, required=True, help="Type of background traffic")
     parser.add_argument('-queues', action='store', type=int, required=True, help="Number of queues")
     parser.add_argument('-load', action='store', type=float, required=True, help="System load")
     parser.add_argument('-start_time', action='store', type=float, required=True, help="Simulation start time")
