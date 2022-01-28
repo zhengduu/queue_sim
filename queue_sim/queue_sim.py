@@ -555,8 +555,8 @@ def main(input_args, serving_bitrate, sim_par, debug):
     file_to_simulate = file_folder + '\\VR_traces\\' + vr_file_name    
     
     # Create output save folder
-    save_folder_name = f'SEED{seed} - {n_queues}Q - {sys_load*100}% Load - ' + \
-                       f'{round(q_latency * 1e6, 2)}us' 
+    save_folder_name = f'SEED{seed} - {n_queues}Q - {sys_load*100}% Load' # + \
+                       # f'{round(q_latency * 1e6, 2)}us' 
                        # f'{round(start_time, 2)}-{round(end_time, 2)}s_' + \                          
                        # f'{int(serving_bitrate/(1e9))}Gbps - ' + \
     output_save_path = file_folder + "\\Output\\" + save_folder_name + \
@@ -838,9 +838,9 @@ def main(input_args, serving_bitrate, sim_par, debug):
             serving_time = next_event.packet.size / serving_bitrate      
             
             if curr_time >= last_departure_time[curr_queue]:     
-                new_departure_time = q_latency + curr_time + serving_time 
+                new_departure_time = curr_time + serving_time 
             else: 
-                new_departure_time = q_latency + serving_time + last_departure_time[
+                new_departure_time = serving_time + last_departure_time[
                                                         curr_queue] 
                 
             # Update last departure time for respective queue
