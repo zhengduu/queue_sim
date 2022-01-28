@@ -151,7 +151,7 @@ def initialise_event_calendar(vr_file_name, seed, vr_timestamps, vr_sizes,
     
     vr_load = vr_bitrate / 1e9    
     
-    bg_throughput = sys_load * 1e9 # In Gbps  - vr_load * 0.99 
+    bg_throughput = (sys_load - 0.05) * 1e9 # In Gbps  - vr_load * 0.99 
     
     total_throughput = (sys_load + vr_load) * 1e9
     total_load = sys_load + vr_load
@@ -556,7 +556,7 @@ def main(input_args, serving_bitrate, sim_par, debug):
     
     # Create output save folder
     save_folder_name = f'SEED{seed} - {n_queues}Q - {sys_load*100}% Load - ' + \
-                       f'{bg_traffic_type} - {round(q_latency * 1e6, 2)}us' 
+                       f'{round(q_latency * 1e6, 2)}us' 
                        # f'{round(start_time, 2)}-{round(end_time, 2)}s_' + \                          
                        # f'{int(serving_bitrate/(1e9))}Gbps - ' + \
     output_save_path = file_folder + "\\Output\\" + save_folder_name + \
